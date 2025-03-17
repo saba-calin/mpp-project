@@ -14,6 +14,29 @@ const Home = () => {
         localStorage.setItem("students", JSON.stringify(newStudents));
     }
 
+
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
+    const sortedStudents = [...students].sort((a, b) => {
+        if (!sortConfig.key) return 0;
+
+        const valA = a[sortConfig.key];
+        const valB = b[sortConfig.key];
+
+        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+    });
+
+    const handleSort = (key) => {
+        let direction = "asc";
+        if (sortConfig.key === key && sortConfig.direction === "asc") {
+            direction = "desc";
+        }
+        setSortConfig({ key, direction });
+    };
+
+
     return (
         <Fragment>
             <HomeNavbar />
@@ -24,6 +47,9 @@ const Home = () => {
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col" onClick={() => handleSort("first_name")} style={{ cursor: "pointer" }}>
+                                    First Name {sortConfig.key === "first_name" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}
+                                </th>
                                 <th scope="col">First Name</th>
                                 <th scope="col">Last Name</th>
                                 <th scope="col">Email</th>

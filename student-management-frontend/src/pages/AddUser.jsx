@@ -51,7 +51,7 @@ const AddUser = () => {
                             <label htmlFor="grade" className="form-label">Grade</label>
                             <input type="number" id="grade" name="grade" className="form-control" placeholder="Grade" style={{marginBottom: "50px"}} />
 
-                            <button type="submit" className="btn btn-outline-primary">Submit</button>
+                            <button type="submit" className="btn btn-outline-primary">Add</button>
                         </form>
                     </div>
                 </div>
