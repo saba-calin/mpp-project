@@ -1,6 +1,8 @@
 import {Fragment, useEffect, useState} from "react";
 import HomeNavbar from "../layout/HomeNavbar.jsx";
 import {Link} from "react-router-dom";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
 import styles from "./Home.module.css";
 
 const Home = () => {
@@ -89,6 +91,44 @@ const Home = () => {
 
     const totalPages = Math.ceil(students.length / elements);
     const paginatedStudents = students.slice((pages - 1) * elements, pages * elements);
+
+
+
+    const gradeDistribution = students.reduce(
+        (acc, student) => {
+            if (student.grade >= 7) {
+                acc.high++;
+            } else if (student.grade >= 5) {
+                acc.average++;
+            } else {
+                acc.low++;
+            }
+            return acc;
+        },
+        { low: 0, average: 0, high: 0 }
+    );
+    const pieData = {
+        labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
+        datasets: [
+            {
+                data: [gradeDistribution.low, gradeDistribution.average, gradeDistribution.high],
+                backgroundColor: ['#FF6384', '#FFCD56', '#9aeb36'],
+                hoverBackgroundColor: ['#FF6384', '#FFCD56', '#9aeb36'],
+            },
+        ],
+    };
+
+
+
+    const randomFirstNames = [
+        "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
+        "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
+    ];
+    const randomLastNames = [
+        "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
+        "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
+    ];
+
 
     return (
         <Fragment>
@@ -179,6 +219,14 @@ const Home = () => {
                     </ul>
                 </div>
             </div>
+
+            <div className={styles.paginationButtons}>
+                <div className={`${styles.pieChartContainer} text-center py-4`}>
+                    <h3>Grade Distribution</h3>
+                    <Pie data={pieData} />
+                </div>
+            </div>
+
         </Fragment>
     );
 }

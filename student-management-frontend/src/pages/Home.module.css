@@ -7,3 +7,8 @@
 .item:hover {
     background: #c6c4c4;
 }
+
+.pieChartContainer {
+    width: 500px;
+    height: 500px;
+}
