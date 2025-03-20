@@ -5,6 +5,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import styles from "./Home.module.css";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const Home = () => {
     const [students, setStudents] = useState([]);
     useEffect(() => {
@@ -120,15 +122,40 @@ const Home = () => {
 
 
 
-    const randomFirstNames = [
-        "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
-        "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
-    ];
-    const randomLastNames = [
-        "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
-        "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
-    ];
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            const randomFirstNames = [
+                "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
+                "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
+            ];
+            const randomLastNames = [
+                "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
+                "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
+            ];
 
+            const id = Date.now();
+            const fistName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
+            const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
+            const email = `${fistName}.${lastName}@gmail.com`;
+            const grade = Math.floor(Math.random() * 10) + 1;
+
+            const newStudent = {
+                id: id,
+                first_name: fistName,
+                last_name: lastName,
+                email: email,
+                grade: grade
+            };
+
+            setStudents(prevStudents => {
+                const updatedStudents = [...prevStudents, newStudent];
+                localStorage.setItem("students", JSON.stringify(updatedStudents));
+                return updatedStudents;
+            });
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <Fragment>
