@@ -10,7 +10,7 @@ const EditUser = () => {
 
     const {id} = useParams();
     const numericId = Number(id);
-    const student = students.find(s => s.id === numericId);
+    const student = students.find(s => s.id === numericId) ?? {"first_name": ""};
     // console.log(student);
 
     const handleEdit = (eventObj) => {
@@ -58,14 +58,14 @@ const EditUser = () => {
         localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
     }
 
-    if (!student) {
-        return (
-            <Fragment>
-                <AddUserNavbar />
-                <div>Loading...</div>
-            </Fragment>
-        );
-    }
+    // if (!student) {
+    //     return (
+    //         <Fragment>
+    //             <AddUserNavbar />
+    //             <div>Loading...</div>
+    //         </Fragment>
+    //     );
+    // }
 
     return (
         <Fragment>
@@ -76,7 +76,7 @@ const EditUser = () => {
                         <h2 className="text-center">
                             Editing Student with id: {student.id}
                         </h2>
-                        <form className="mb-3 text-center" onSubmit={handleEdit}>
+                        <form role="form" className="mb-3 text-center" onSubmit={handleEdit}>
                             <label htmlFor="fist_name" className="form-label">First Name</label>
                             <input type="text" id="fist_name" name="first_name" className="form-control" placeholder="First Name" defaultValue={student.first_name} style={{marginBottom: "10px"}} />
 

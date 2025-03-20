@@ -2,20 +2,20 @@ import {Fragment} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useLocalStorage} from "../useLocalStorage.js";
 
+export const getId = () => {
+    const students = JSON.parse(localStorage.getItem('students')) ?? [];
+
+    let id = 0;
+    for (const student of students) {
+        if (Number(student.id) > id) {
+            id = Number(student.id);
+        }
+    }
+    return id + 1;
+}
+
 const AddUser = () => {
     const [storedData, setStoredData] = useLocalStorage('students', []);
-
-    const getId = () => {
-        const students = JSON.parse(localStorage.getItem('students')) ?? [];
-
-        let id = 0;
-        for (const student of students) {
-            if (Number(student.id) > id) {
-                id = Number(student.id);
-            }
-        }
-        return id + 1;
-    }
 
     const handleSubmit = (eventObj) => {
         eventObj.preventDefault();
@@ -69,7 +69,7 @@ const AddUser = () => {
                         <h2 className="text-center">
                             Enter a new Student
                         </h2>
-                        <form className="mb-3 text-center" onSubmit={handleSubmit}>
+                        <form role="form" className="mb-3 text-center" onSubmit={handleSubmit}>
                             <label htmlFor="fist_name" className="form-label">First Name</label>
                             <input type="text" id="fist_name" name="first_name" className="form-control" placeholder="First Name" style={{marginBottom: "10px"}} />
 
@@ -95,7 +95,3 @@ const AddUser = () => {
 }
 
 export default AddUser;
-
-export const temp = () => {
-    return "test";
-}
