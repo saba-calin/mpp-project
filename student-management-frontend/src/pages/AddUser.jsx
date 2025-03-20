@@ -23,6 +23,40 @@ const AddUser = () => {
         const data = new FormData(eventObj.target);
         const formattedData = Object.fromEntries(data.entries());
 
+        if (formattedData.first_name === "") {
+            alert("The 'First Name' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.last_name === "") {
+            alert("The 'Last Name' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.email === "") {
+            alert("The 'Email' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.age === "") {
+            alert("The 'Age' field cannot be empty");
+            return;
+        }
+        if (formattedData.age < 0 || formattedData.age > 150) {
+            alert("Invalid age");
+            return;
+        }
+
+        if (formattedData.grade === "") {
+            alert("The 'Grade' field cannot be empty");
+            return;
+        }
+        if (formattedData.grade < 1 || formattedData.grade > 10) {
+            alert("Invalid grade");
+            return;
+        }
+
+        alert("Student added successfully");
         setStoredData([...storedData, {...formattedData, "id": getId()}]);
     }
 
@@ -61,3 +95,7 @@ const AddUser = () => {
 }
 
 export default AddUser;
+
+export const temp = () => {
+    return "test";
+}

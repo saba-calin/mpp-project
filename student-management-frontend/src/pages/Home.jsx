@@ -104,20 +104,28 @@ const Home = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {students.map(s => (
-                                <tr key={s.id}>
-                                    <th scope="row">{s.id}</th>
-                                    <td>{s.first_name}</td>
-                                    <td>{s.last_name}</td>
-                                    <td>{s.email}</td>
-                                    <td>{s.grade}</td>
-                                    <td className="text-center">
-                                        {/*<button className="btn btn-primary mx-2">View</button>*/}
-                                        <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>
-                                        <button className="btn btn-danger mx-2" onClick={() => handleDelete(s.id)}>Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {(
+                                (() => {
+                                    const maxGrade = Math.max(...students.map(s => s.grade));
+                                    const minGrade = Math.min(...students.map(s => s.grade));
+
+                                    // table-success
+                                    // table-danger
+                                    return students.map(s => (
+                                        <tr key={s.id} className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
+                                            <th scope="row">{s.id}</th>
+                                            <td>{s.first_name}</td>
+                                            <td>{s.last_name}</td>
+                                            <td>{s.email}</td>
+                                            <td>{s.grade}</td>
+                                            <td className="text-center">
+                                                <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>
+                                                <button className="btn btn-danger mx-2" onClick={() => handleDelete(s.id)}>Delete</button>
+                                            </td>
+                                        </tr>
+                                    ));
+                                })()
+                            )}
                         </tbody>
                     </table>
                 </div>

@@ -1,4 +1,5 @@
 import {Fragment} from "react";
+import {arr} from "./assets/students.js";
 import Home from "./pages/Home.jsx";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 import HomeNavbar from "./layout/HomeNavbar.jsx";

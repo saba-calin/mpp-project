@@ -20,6 +20,40 @@ const EditUser = () => {
         const formattedData = Object.fromEntries(data.entries());
         console.log(formattedData);
 
+        if (formattedData.first_name === "") {
+            alert("The 'First Name' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.last_name === "") {
+            alert("The 'Last Name' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.email === "") {
+            alert("The 'Email' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.age === "") {
+            alert("The 'Age' field cannot be empty");
+            return;
+        }
+        if (formattedData.age < 0 || formattedData.age > 150) {
+            alert("Invalid age");
+            return;
+        }
+
+        if (formattedData.grade === "") {
+            alert("The 'Grade' field cannot be empty");
+            return;
+        }
+        if (formattedData.grade < 1 || formattedData.grade > 10) {
+            alert("Invalid grade");
+            return;
+        }
+
+        alert("Student edited successfully");
         const newStudents = students.filter(s => s.id !== numericId);
         localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
     }
