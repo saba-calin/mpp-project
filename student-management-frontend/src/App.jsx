@@ -2,6 +2,7 @@ import {Fragment} from "react";
 import {arr} from "./assets/students.js";
 import Home from "./pages/Home.jsx";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap.bundle.min"
 import HomeNavbar from "./layout/HomeNavbar.jsx";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import AddUser from "./pages/AddUser.jsx";

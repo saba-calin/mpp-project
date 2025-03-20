@@ -1,6 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 import HomeNavbar from "../layout/HomeNavbar.jsx";
 import {Link} from "react-router-dom";
+import styles from "./Home.module.css";
 
 const Home = () => {
     const [students, setStudents] = useState([]);
@@ -76,12 +77,28 @@ const Home = () => {
         });
     }
 
+    const [elements, setElements] = useState(5);
+    const handleChangeElements = (num) => {
+        setElements(num);
+    }
+
+    const [pages, setPages] = useState(1);
+    const handleChangePages = (num) => {
+        setPages(num);
+    }
+
+    const totalPages = Math.ceil(students.length / elements);
+    const paginatedStudents = students.slice((pages - 1) * elements, pages * elements);
+
     return (
         <Fragment>
-            <HomeNavbar />
+            <HomeNavbar/>
             <div className="text-center" style={{marginTop: "10px"}}>
                 <label htmlFor="filter" style={{marginRight: "10px"}}>Filter By First Name:</label>
-                <input type="text" name="filter" id="filter" style={{marginRight: "10px"}} onChange={(e) => {setFilterValue(e.target.value); handleFilter(e.target.value)}}/>
+                <input type="text" name="filter" id="filter" style={{marginRight: "10px"}} onChange={(e) => {
+                    setFilterValue(e.target.value);
+                    handleFilter(e.target.value)
+                }}/>
                 {/*<button onClick={() => handleFilter(filterValue)}>Filter</button>*/}
             </div>
 
@@ -89,45 +106,77 @@ const Home = () => {
                 <div className="py-4">
                     <table className="table border shadow">
                         <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">
-                                    Grade
-                                    <button className="btn border-0" onClick={changeOrder}>
-                                        {order === "neutral" ? "↑↓" : (order === "asc" ? "↑" : "↓")}
-                                    </button>
-                                </th>
-                                <th scope="col" className="text-center">Action</th>
-                            </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">
+                                Grade
+                                <button className="btn border-0" onClick={changeOrder}>
+                                    {order === "neutral" ? "↑↓" : (order === "asc" ? "↑" : "↓")}
+                                </button>
+                            </th>
+                            <th scope="col" className="text-center">Action</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {(
-                                (() => {
-                                    const maxGrade = Math.max(...students.map(s => s.grade));
-                                    const minGrade = Math.min(...students.map(s => s.grade));
+                        {(
+                            (() => {
+                                const maxGrade = Math.max(...students.map(s => s.grade));
+                                const minGrade = Math.min(...students.map(s => s.grade));
 
-                                    // table-success
-                                    // table-danger
-                                    return students.map(s => (
-                                        <tr key={s.id} className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
-                                            <th scope="row">{s.id}</th>
-                                            <td>{s.first_name}</td>
-                                            <td>{s.last_name}</td>
-                                            <td>{s.email}</td>
-                                            <td>{s.grade}</td>
-                                            <td className="text-center">
-                                                <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>
-                                                <button className="btn btn-danger mx-2" onClick={() => handleDelete(s.id)}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    ));
-                                })()
-                            )}
+                                // table-success
+                                // table-danger
+                                return paginatedStudents.map(s => (
+                                    <tr key={s.id}
+                                        className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
+                                        <th scope="row">{s.id}</th>
+                                        <td>{s.first_name}</td>
+                                        <td>{s.last_name}</td>
+                                        <td>{s.email}</td>
+                                        <td>{s.grade}</td>
+                                        <td className="text-center">
+                                            <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>
+                                            <button className="btn btn-danger mx-2"
+                                                    onClick={() => handleDelete(s.id)}>Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ));
+                            })()
+                        )}
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <div className={styles.paginationButtons}>
+                <div className="dropdown text-center">
+                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="true">
+                        Elements ({elements})
+                    </button>
+                    <ul className="dropdown-menu">
+                        <li className={styles.item} onClick={() => handleChangeElements(5)}>5</li>
+                        <li className={styles.item} onClick={() => handleChangeElements(6)}>6</li>
+                        <li className={styles.item} onClick={() => handleChangeElements(7)}>7</li>
+                        <li className={styles.item} onClick={() => handleChangeElements(8)}>8</li>
+                        <li className={styles.item} onClick={() => handleChangeElements(9)}>9</li>
+                        <li className={styles.item} onClick={() => handleChangeElements(10)}>10</li>
+                    </ul>
+                </div>
+
+                <div className="dropdown text-center">
+                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="true">
+                        Page ({pages})
+                    </button>
+                    <ul className="dropdown-menu">
+                        {Array.from({length: totalPages}, (_, index) => (
+                            <li key={index + 1} className={styles.item} onClick={() => handleChangePages(index + 1)}>{index + 1}</li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </Fragment>

@@ -1,0 +1,9 @@
+.paginationButtons {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.item:hover {
+    background: #c6c4c4;
+}
