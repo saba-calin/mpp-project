@@ -13,9 +13,4 @@ public class StudentManagementAppApplication {
 		SpringApplication.run(StudentManagementAppApplication.class, args);
 	}
 
-	@GetMapping
-	public String fun() {
-		return "hi";
-	}
-
 }

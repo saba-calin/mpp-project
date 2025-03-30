@@ -122,40 +122,78 @@ const Home = () => {
 
 
 
+    // useEffect(() => {
+    //     const intervalId = setInterval(() => {
+    //         const randomFirstNames = [
+    //             "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
+    //             "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
+    //         ];
+    //         const randomLastNames = [
+    //             "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
+    //             "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
+    //         ];
+    //
+    //         const id = Date.now();
+    //         const fistName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
+    //         const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
+    //         const email = `${fistName}.${lastName}@gmail.com`;
+    //         const grade = Math.floor(Math.random() * 10) + 1;
+    //
+    //         const newStudent = {
+    //             id: id,
+    //             first_name: fistName,
+    //             last_name: lastName,
+    //             email: email,
+    //             grade: grade
+    //         };
+    //
+    //         setStudents(prevStudents => {
+    //             const updatedStudents = [...prevStudents, newStudent];
+    //             localStorage.setItem("students", JSON.stringify(updatedStudents));
+    //             return updatedStudents;
+    //         });
+    //     }, 1000);
+    //
+    //     return () => clearInterval(intervalId);
+    // }, []);
+
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [intervalId, setIntervalId] = useState(null);
+
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            const randomFirstNames = [
-                "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
-                "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
-            ];
-            const randomLastNames = [
-                "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
-                "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
-            ];
+        if (isGenerating) {
+            const id = setInterval(() => {
+                const randomFirstNames = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack", "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"];
+                const randomLastNames = ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"];
 
-            const id = Date.now();
-            const fistName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
-            const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
-            const email = `${fistName}.${lastName}@gmail.com`;
-            const grade = Math.floor(Math.random() * 10) + 1;
+                const studentId = Date.now();
+                const firstName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
+                const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
+                const email = `${firstName}.${lastName}@gmail.com`;
+                const grade = Math.floor(Math.random() * 10) + 1;
 
-            const newStudent = {
-                id: id,
-                first_name: fistName,
-                last_name: lastName,
-                email: email,
-                grade: grade
-            };
+                const newStudent = { id: studentId, first_name: firstName, last_name: lastName, email, grade };
 
-            setStudents(prevStudents => {
-                const updatedStudents = [...prevStudents, newStudent];
-                localStorage.setItem("students", JSON.stringify(updatedStudents));
-                return updatedStudents;
-            });
-        }, 1000);
+                setStudents(prevStudents => {
+                    const updatedStudents = [...prevStudents, newStudent];
+                    localStorage.setItem("students", JSON.stringify(updatedStudents));
+                    return updatedStudents;
+                });
+            }, 1000);
+
+            setIntervalId(id);
+        }
+        else {
+            clearInterval(intervalId);
+        }
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [isGenerating]);
+
+    const toggleGeneration = () => {
+        setIsGenerating(prev => !prev);
+    };
+
 
     return (
         <Fragment>
@@ -252,6 +290,16 @@ const Home = () => {
                     <h3>Grade Distribution</h3>
                     <Pie data={pieData} />
                 </div>
+            </div>
+
+            {/*<div className={styles.paginationButtons}>*/}
+            {/*    <button onClick={handleGeneration}>Start Generation</button>*/}
+            {/*</div>*/}
+
+            <div className={styles.paginationButtons}>
+                <button onClick={toggleGeneration}>
+                    {isGenerating ? "Stop Generation" : "Start Generation"}
+                </button>
             </div>
 
         </Fragment>

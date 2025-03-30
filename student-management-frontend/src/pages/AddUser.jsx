@@ -57,7 +57,9 @@ const AddUser = () => {
         }
 
         alert("Student added successfully");
-        setStoredData([...storedData, {...formattedData, "id": getId()}]);
+        // setStoredData([...storedData, {...formattedData, "id": getId()}]);
+
+
     }
 
     return (
