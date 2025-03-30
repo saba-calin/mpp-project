@@ -1,16 +1,28 @@
 import {Fragment, useEffect, useState} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useParams} from "react-router-dom";
+import axios from "axios";
 
 const EditUser = () => {
-    const [students, setStudents] = useState([]);
-    useEffect(() => {
-        setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
-    }, []);
+    // const [students, setStudents] = useState([]);
+    // useEffect(() => {
+    //     setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
+    // }, []);
 
     const {id} = useParams();
     const numericId = Number(id);
-    const student = students.find(s => s.id === numericId) ?? {"first_name": ""};
+
+    const [student, setStudent] = useState([]);
+    useEffect(() => {
+        const fetchStudent = async () => {
+            const response = await axios.get(`http://localhost:8080/api/v1/students/${id}`);
+            setStudent(response.data);
+        }
+        fetchStudent();
+    }, []);
+
+
+    // const student = students.find(s => s.id === numericId) ?? {"first_name": ""};
     // console.log(student);
 
     const handleEdit = (eventObj) => {
@@ -53,9 +65,24 @@ const EditUser = () => {
             return;
         }
 
-        alert("Student edited successfully");
-        const newStudents = students.filter(s => s.id !== numericId);
-        localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
+        // alert("Student edited successfully");
+        // const newStudents = students.filter(s => s.id !== numericId);
+        // localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
+
+        const student = {
+            id: id,
+            firstName: formattedData.first_name,
+            lastName: formattedData.last_name,
+            email: formattedData.email,
+            age: formattedData.age,
+            grade: formattedData.grade
+        }
+
+        axios.put('http://localhost:8080/api/v1/students', student, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     // if (!student) {
@@ -66,7 +93,6 @@ const EditUser = () => {
     //         </Fragment>
     //     );
     // }
-
     return (
         <Fragment>
             <AddUserNavbar />
@@ -78,10 +104,10 @@ const EditUser = () => {
                         </h2>
                         <form role="form" className="mb-3 text-center" onSubmit={handleEdit}>
                             <label htmlFor="fist_name" className="form-label">First Name</label>
-                            <input type="text" id="fist_name" name="first_name" className="form-control" placeholder="First Name" defaultValue={student.first_name} style={{marginBottom: "10px"}} />
+                            <input type="text" id="fist_name" name="first_name" className="form-control" placeholder="First Name" defaultValue={student.firstName} style={{marginBottom: "10px"}} />
 
                             <label htmlFor="last_name" className="form-label">Last Name</label>
-                            <input type="text" id="last_name" name="last_name" className="form-control" placeholder="Last Name" defaultValue={student.last_name} style={{marginBottom: "10px"}} />
+                            <input type="text" id="last_name" name="last_name" className="form-control" placeholder="Last Name" defaultValue={student.lastName} style={{marginBottom: "10px"}} />
 
                             <label htmlFor="email" className="form-label">Email</label>
                             <input type="email" id="email" name="email" className="form-control" placeholder="Email" defaultValue={student.email} style={{marginBottom: "10px"}} />

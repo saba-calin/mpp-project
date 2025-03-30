@@ -4,13 +4,20 @@ import {Link} from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import styles from "./Home.module.css";
+import axios from "axios";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
     const [students, setStudents] = useState([]);
     useEffect(() => {
-        setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
+        const fetchStudents = async () => {
+            const response = await axios.get("http://localhost:8080/api/v1/students");
+            setStudents(response.data);
+        }
+        fetchStudents();
+
+        // setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
     }, []);
 
     const handleDelete = (id) => {
@@ -120,43 +127,6 @@ const Home = () => {
         ],
     };
 
-
-
-    // useEffect(() => {
-    //     const intervalId = setInterval(() => {
-    //         const randomFirstNames = [
-    //             "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack",
-    //             "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"
-    //         ];
-    //         const randomLastNames = [
-    //             "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
-    //             "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"
-    //         ];
-    //
-    //         const id = Date.now();
-    //         const fistName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
-    //         const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
-    //         const email = `${fistName}.${lastName}@gmail.com`;
-    //         const grade = Math.floor(Math.random() * 10) + 1;
-    //
-    //         const newStudent = {
-    //             id: id,
-    //             first_name: fistName,
-    //             last_name: lastName,
-    //             email: email,
-    //             grade: grade
-    //         };
-    //
-    //         setStudents(prevStudents => {
-    //             const updatedStudents = [...prevStudents, newStudent];
-    //             localStorage.setItem("students", JSON.stringify(updatedStudents));
-    //             return updatedStudents;
-    //         });
-    //     }, 1000);
-    //
-    //     return () => clearInterval(intervalId);
-    // }, []);
-
     const [isGenerating, setIsGenerating] = useState(false);
     const [intervalId, setIntervalId] = useState(null);
 
@@ -237,8 +207,8 @@ const Home = () => {
                                     <tr key={s.id}
                                         className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
                                         <th scope="row">{s.id}</th>
-                                        <td>{s.first_name}</td>
-                                        <td>{s.last_name}</td>
+                                        <td>{s.firstName}</td>
+                                        <td>{s.lastName}</td>
                                         <td>{s.email}</td>
                                         <td>{s.grade}</td>
                                         <td className="text-center">
@@ -285,22 +255,18 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className={styles.paginationButtons}>
-                <div className={`${styles.pieChartContainer} text-center py-4`}>
-                    <h3>Grade Distribution</h3>
-                    <Pie data={pieData} />
-                </div>
-            </div>
-
             {/*<div className={styles.paginationButtons}>*/}
-            {/*    <button onClick={handleGeneration}>Start Generation</button>*/}
+            {/*    <div className={`${styles.pieChartContainer} text-center py-4`}>*/}
+            {/*        <h3>Grade Distribution</h3>*/}
+            {/*        <Pie data={pieData} />*/}
+            {/*    </div>*/}
             {/*</div>*/}
 
-            <div className={styles.paginationButtons}>
-                <button onClick={toggleGeneration}>
-                    {isGenerating ? "Stop Generation" : "Start Generation"}
-                </button>
-            </div>
+            {/*<div className={styles.paginationButtons}>*/}
+            {/*    <button onClick={toggleGeneration}>*/}
+            {/*        {isGenerating ? "Stop Generation" : "Start Generation"}*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
         </Fragment>
     );
