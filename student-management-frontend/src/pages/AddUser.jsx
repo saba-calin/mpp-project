@@ -1,6 +1,7 @@
 import {Fragment} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useLocalStorage} from "../useLocalStorage.js";
+import axios from "axios";
 
 export const getId = () => {
     const students = JSON.parse(localStorage.getItem('students')) ?? [];
@@ -56,10 +57,22 @@ const AddUser = () => {
             return;
         }
 
-        alert("Student added successfully");
+        // alert("Student added successfully");
         // setStoredData([...storedData, {...formattedData, "id": getId()}]);
 
+        const student = {
+            firstName: formattedData.first_name,
+            lastName: formattedData.last_name,
+            email: formattedData.email,
+            age: formattedData.age,
+            grade: formattedData.grade
+        }
 
+        axios.post('http://localhost:8080/api/v1/students', student, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     return (
