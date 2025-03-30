@@ -16,26 +16,34 @@ const Home = () => {
             setStudents(response.data);
         }
         fetchStudents();
-
-        // setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
     }, []);
 
-    const handleDelete = (id) => {
-        const newStudents = students.filter(s => s.id !== id);
-        setStudents(newStudents);
-        localStorage.setItem("students", JSON.stringify(newStudents));
+    const handleDelete = async (id) => {
+        await axios.delete(`http://localhost:8080/api/v1/students/${id}`);
+        const fetchStudents = async () => {
+            const response = await axios.get("http://localhost:8080/api/v1/students");
+            setStudents(response.data);
+        }
+        fetchStudents();
+    }
+
+    const handleDropTable = async () => {
+        await axios.delete("http://localhost:8080/api/v1/students/drop-table")
+        const fetchStudents = async () => {
+            const response = await axios.get("http://localhost:8080/api/v1/students");
+            setStudents(response.data);
+        }
+        fetchStudents();
     }
 
     const [filterValue, setFilterValue] = useState("");
-    const handleFilter = (str) => {
-        // console.log(str);
-
+    const handleFilter = async(str) => {
+        const response = await axios.get("http://localhost:8080/api/v1/students");
         if (str === "") {
-            const newStudents = JSON.parse(localStorage.getItem("students")) ?? [];
+            const newStudents = response.data;
 
             if (order === "asc") {
                 newStudents.sort((a, b) => a.grade - b.grade);
-                console.log("fds");
             }
             else if (order === "desc") {
                 newStudents.sort((a, b) => b.grade - a.grade);
@@ -45,8 +53,8 @@ const Home = () => {
             return;
         }
 
-        const temp = JSON.parse(localStorage.getItem("students")) ?? [];
-        const newStudents = temp.filter(s => s.first_name.toLowerCase().includes(str.toLowerCase()));
+        const temp = response.data;
+        const newStudents = temp.filter(s => s.firstName.toLowerCase().includes(str.toLowerCase()));
 
         if (order === "asc") {
             newStudents.sort((a, b) => a.grade - b.grade);
@@ -59,10 +67,11 @@ const Home = () => {
     }
 
     const [order, setOrder] = useState("neutral");
-    const changeOrder = () => {
+    const changeOrder = async () => {
+        const response = await axios.get("http://localhost:8080/api/v1/students");
         setOrder((prevOrder) => {
-            let sortedStudents = [...students];
             let newOrder = prevOrder;
+            let sortedStudents = response.data;
 
             switch (prevOrder) {
                 case "neutral":
@@ -77,8 +86,8 @@ const Home = () => {
                     break;
                 case "desc":
                     newOrder = "neutral";
-                    const temp = JSON.parse(localStorage.getItem("students")) ?? [];
-                    sortedStudents = temp.filter(s => s.first_name.toLowerCase().includes(filterValue.toLowerCase()));
+                    const temp = response.data;
+                    sortedStudents = temp.filter(s => s.firstName.toLowerCase().includes(filterValue.toLowerCase()));
 
                     break;
             }
@@ -136,20 +145,29 @@ const Home = () => {
                 const randomFirstNames = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack", "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"];
                 const randomLastNames = ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"];
 
-                const studentId = Date.now();
                 const firstName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
                 const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
                 const email = `${firstName}.${lastName}@gmail.com`;
                 const grade = Math.floor(Math.random() * 10) + 1;
 
-                const newStudent = { id: studentId, first_name: firstName, last_name: lastName, email, grade };
+                const newStudent = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    grade: grade
+                };
 
-                setStudents(prevStudents => {
-                    const updatedStudents = [...prevStudents, newStudent];
-                    localStorage.setItem("students", JSON.stringify(updatedStudents));
-                    return updatedStudents;
+                axios.post('http://localhost:8080/api/v1/students', newStudent, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
-            }, 1000);
+                const fetchStudents = async () => {
+                    const response = await axios.get("http://localhost:8080/api/v1/students");
+                    setStudents(response.data);
+                }
+                fetchStudents();
+            }, 10);
 
             setIntervalId(id);
         }
@@ -174,7 +192,6 @@ const Home = () => {
                     setFilterValue(e.target.value);
                     handleFilter(e.target.value)
                 }}/>
-                {/*<button onClick={() => handleFilter(filterValue)}>Filter</button>*/}
             </div>
 
             <div className="container">
@@ -201,8 +218,6 @@ const Home = () => {
                                 const maxGrade = Math.max(...students.map(s => s.grade));
                                 const minGrade = Math.min(...students.map(s => s.grade));
 
-                                // table-success
-                                // table-danger
                                 return paginatedStudents.map(s => (
                                     <tr key={s.id}
                                         className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
@@ -255,18 +270,24 @@ const Home = () => {
                 </div>
             </div>
 
-            {/*<div className={styles.paginationButtons}>*/}
-            {/*    <div className={`${styles.pieChartContainer} text-center py-4`}>*/}
-            {/*        <h3>Grade Distribution</h3>*/}
-            {/*        <Pie data={pieData} />*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <div className={styles.paginationButtons}>
+                <div className={`${styles.pieChartContainer} text-center py-4`}>
+                    <h3>Grade Distribution</h3>
+                    <Pie data={pieData} />
+                </div>
+            </div>
 
-            {/*<div className={styles.paginationButtons}>*/}
-            {/*    <button onClick={toggleGeneration}>*/}
-            {/*        {isGenerating ? "Stop Generation" : "Start Generation"}*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+            <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
+                <button onClick={toggleGeneration}>
+                    {isGenerating ? "Stop Generation" : "Start Generation"}
+                </button>
+            </div>
+
+            <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
+                <button onClick={handleDropTable}>
+                    Drop Table
+                </button>
+            </div>
 
         </Fragment>
     );

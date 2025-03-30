@@ -34,4 +34,12 @@ public class StudentService {
     public Student getStudentById(int studentId) {
         return this.studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
     }
+
+    public void deleteStudent(int studentId) {
+        this.studentRepository.deleteById(studentId);
+    }
+
+    public void dropTable() {
+        this.studentRepository.deleteAll();
+    }
 }

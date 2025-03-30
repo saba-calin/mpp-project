@@ -33,4 +33,14 @@ public class StudentController {
     public void updateStudent(@RequestBody Student student) {
         this.studentService.updateStudent(student);
     }
+
+    @DeleteMapping("{studentId}")
+    public void deleteStudent(@PathVariable("studentId") int studentId) {
+        this.studentService.deleteStudent(studentId);
+    }
+
+    @DeleteMapping("drop-table")
+    public void dropTable() {
+        this.studentService.dropTable();
+    }
 }

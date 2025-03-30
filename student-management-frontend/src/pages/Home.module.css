@@ -12,3 +12,8 @@
     width: 500px;
     height: 500px;
 }
+
+.generateButton {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
