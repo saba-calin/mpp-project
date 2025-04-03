@@ -148,11 +148,13 @@ const Home = () => {
                 const firstName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
                 const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
                 const email = `${firstName}.${lastName}@gmail.com`;
+                const age = Math.random() < 0.5 ? Math.floor(Math.random() * 10) + 18 : Math.floor(Math.random() * 10) + 25;
                 const grade = Math.floor(Math.random() * 10) + 1;
 
                 const newStudent = {
                     firstName: firstName,
                     lastName: lastName,
+                    age: age,
                     email: email,
                     grade: grade
                 };
