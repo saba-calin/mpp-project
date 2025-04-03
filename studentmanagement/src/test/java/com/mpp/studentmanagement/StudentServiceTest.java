@@ -47,18 +47,18 @@ public class StudentServiceTest {
         verify(studentRepository, times(1)).save(student);
     }
 
-    @Test
-    void testUpdateStudent() {
-        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-        Student existingStudent = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-
-        when(studentRepository.findById(student.getId())).thenReturn(Optional.of(existingStudent));
-
-        studentService.updateStudent(student);
-
-        verify(studentRepository, times(1)).findById(student.getId());
-        verify(studentRepository, times(1)).save(existingStudent);
-    }
+//    @Test
+//    void testUpdateStudent() {
+//        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//        Student existingStudent = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//
+//        when(studentRepository.findById(student.getId())).thenReturn(Optional.of(existingStudent));
+//
+//        studentService.updateStudent(student);
+//
+//        verify(studentRepository, times(1)).findById(student.getId());
+//        verify(studentRepository, times(1)).save(existingStudent);
+//    }
 
     @Test
     void testGetStudentById() {

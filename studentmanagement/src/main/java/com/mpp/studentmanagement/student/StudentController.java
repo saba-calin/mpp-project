@@ -4,6 +4,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// silver: offline support -- local storage
+// endless scrolling
+// server deployed
+
+// gold: generation on the backend
+// photo upload
+// path
 @RestController
 @RequestMapping("api/v1/students")
 @CrossOrigin(origins = "http://localhost:5173")
