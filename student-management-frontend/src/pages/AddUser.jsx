@@ -68,12 +68,6 @@ const AddUser = () => {
             grade: formattedData.grade
         }
 
-        if (formattedData.photo) {
-            // console.log(formattedData.photo.size);
-            student.photo = formattedData.photo;
-        }
-        console.log(student);
-
         // http://172.21.0.3:8080/api/v1/students
         axios.post('http://localhost:8080/api/v1/students', student, {
             headers: {

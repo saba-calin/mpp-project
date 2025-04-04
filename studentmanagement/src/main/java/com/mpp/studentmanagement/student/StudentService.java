@@ -18,7 +18,13 @@ public class StudentService {
     }
 
     public void addStudent(Student student) {
-        this.studentRepository.save(student);
+        // save the student to the get id first
+        Student savedStudent = this.studentRepository.save(student);
+
+        // /home/saba/Desktop/mpp/studentmanagement/src/main/java/com/mpp/studentmanagement/photos
+
+
+
     }
 
     @Transactional
