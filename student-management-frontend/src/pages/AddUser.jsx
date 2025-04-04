@@ -68,6 +68,13 @@ const AddUser = () => {
             grade: formattedData.grade
         }
 
+        if (formattedData.photo) {
+            // console.log(formattedData.photo.size);
+            student.photo = formattedData.photo;
+        }
+        console.log(student);
+
+        // http://172.21.0.3:8080/api/v1/students
         axios.post('http://localhost:8080/api/v1/students', student, {
             headers: {
                 'Content-Type': 'application/json'
@@ -98,7 +105,10 @@ const AddUser = () => {
                             <input type="number" id="age" name="age" className="form-control" placeholder="Age" style={{marginBottom: "10px"}} />
 
                             <label htmlFor="grade" className="form-label">Grade</label>
-                            <input type="number" id="grade" name="grade" className="form-control" placeholder="Grade" style={{marginBottom: "50px"}} />
+                            <input type="number" id="grade" name="grade" className="form-control" placeholder="Grade" style={{marginBottom: "10px"}} />
+
+                            <label htmlFor="photo" className="form-label">Photo</label>
+                            <input type="file" id="photo" name="photo" className="form-control" style={{marginBottom: "50px"}} />
 
                             <button type="submit" className="btn btn-outline-primary">Add</button>
                         </form>
