@@ -57,6 +57,11 @@ const AddUser = () => {
             return;
         }
 
+        if (formattedData.photo.size !== 0 && !formattedData.photo.name.endsWith(".jpg")) {
+            alert("The photo must be a jpg");
+            return;
+        }
+
         // alert("Student added successfully");
         // setStoredData([...storedData, {...formattedData, "id": getId()}]);
 
@@ -68,12 +73,22 @@ const AddUser = () => {
             grade: formattedData.grade
         }
 
-        // http://172.21.0.3:8080/api/v1/students
-        axios.post('http://localhost:8080/api/v1/students', student, {
+        const formData = new FormData();
+        formData.append('student', JSON.stringify(student));
+        formData.append('photo', formattedData.photo);
+
+        axios.post('http://localhost:8080/api/v1/students', formData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data'
             }
         });
+
+        // http://172.21.0.3:8080/api/v1/students
+        // axios.post('http://localhost:8080/api/v1/students', student, {
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
     }
 
     return (

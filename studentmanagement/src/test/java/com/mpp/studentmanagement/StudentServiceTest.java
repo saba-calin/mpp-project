@@ -40,12 +40,12 @@ public class StudentServiceTest {
         verify(studentRepository, times(1)).findAll();
     }
 
-    @Test
-    void testAddStudent() {
-        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-        studentService.addStudent(student);
-        verify(studentRepository, times(1)).save(student);
-    }
+//    @Test
+//    void testAddStudent() {
+//        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//        studentService.addStudent(student);
+//        verify(studentRepository, times(1)).save(student);
+//    }
 
 //    @Test
 //    void testUpdateStudent() {

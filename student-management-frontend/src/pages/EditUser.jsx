@@ -14,10 +14,13 @@ const EditUser = () => {
 
     const [student, setStudent] = useState([]);
     useEffect(() => {
+
+
         const fetchStudent = async () => {
             const response = await axios.get(`http://localhost:8080/api/v1/students/${id}`);
             setStudent(response.data);
         }
+
         fetchStudent();
     }, []);
 

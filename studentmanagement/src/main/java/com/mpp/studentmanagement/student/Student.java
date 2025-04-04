@@ -19,4 +19,11 @@ public class Student {
     private String email;
     private Integer age;
     private Double grade;
+    @Column(columnDefinition = "TEXT")
+    private String path;
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }

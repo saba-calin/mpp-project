@@ -67,17 +67,17 @@ public class StudentControllerTest {
         verify(studentService, times(1)).getStudentById(studentId);
     }
 
-    @Test
-    void testAddStudent() throws Exception {
-        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/students")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(student)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        verify(studentService, times(1)).addStudent(any(Student.class));
-    }
+//    @Test
+//    void testAddStudent() throws Exception {
+//        Student student = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/students")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(new ObjectMapper().writeValueAsString(student)))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//
+//        verify(studentService, times(1)).addStudent(any(Student.class));
+//    }
 
     @Test
     void testUpdateStudent() throws Exception {

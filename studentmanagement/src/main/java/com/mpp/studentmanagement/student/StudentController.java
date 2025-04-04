@@ -1,7 +1,11 @@
 package com.mpp.studentmanagement.student;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 // silver: offline support -- local storage
@@ -32,8 +36,11 @@ public class StudentController {
     }
 
     @PostMapping
-    public void addStudent(@RequestBody Student student) {
-        this.studentService.addStudent(student);
+    public void addStudent(@RequestPart("student") String studentJson,
+                           @RequestPart(value = "photo", required = false) MultipartFile photo) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Student student = objectMapper.readValue(studentJson, Student.class);
+        this.studentService.addStudent(student, photo);
     }
 
     @PutMapping
