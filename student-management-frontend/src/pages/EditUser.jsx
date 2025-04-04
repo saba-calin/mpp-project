@@ -2,6 +2,7 @@ import {Fragment, useEffect, useState} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useParams} from "react-router-dom";
 import axios from "axios";
+import styles from "./EditUser.module.css"
 
 const EditUser = () => {
     // const [students, setStudents] = useState([]);
@@ -13,27 +14,29 @@ const EditUser = () => {
     const numericId = Number(id);
 
     const [student, setStudent] = useState([]);
+    const [image, setImage] = useState([]);
     useEffect(() => {
-
-
-        const fetchStudent = async () => {
+        const fetchData = async () => {
             const response = await axios.get(`http://localhost:8080/api/v1/students/${id}`);
             setStudent(response.data);
+
+            const img = await axios.get(
+                `http://localhost:8080/api/v1/students/image?path=${response.data.path}`,
+                { responseType: 'blob' }
+            );
+            const imageURL = URL.createObjectURL(img.data);
+            setImage(imageURL);
         }
 
-        fetchStudent();
+        fetchData();
     }, []);
 
-
-    // const student = students.find(s => s.id === numericId) ?? {"first_name": ""};
-    // console.log(student);
 
     const handleEdit = (eventObj) => {
         eventObj.preventDefault();
 
         const data = new FormData(eventObj.target);
         const formattedData = Object.fromEntries(data.entries());
-        console.log(formattedData);
 
         if (formattedData.first_name === "") {
             alert("The 'First Name' field cannot be empty");
@@ -68,6 +71,11 @@ const EditUser = () => {
             return;
         }
 
+        if (formattedData.photo.size !== 0 && !formattedData.photo.name.endsWith(".jpg")) {
+            alert("The photo must be a jpg");
+            return;
+        }
+
         // alert("Student edited successfully");
         // const newStudents = students.filter(s => s.id !== numericId);
         // localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
@@ -99,6 +107,7 @@ const EditUser = () => {
     return (
         <Fragment>
             <AddUserNavbar />
+
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
@@ -119,12 +128,20 @@ const EditUser = () => {
                             <input type="number" id="age" name="age" className="form-control" placeholder="Age" defaultValue={student.age} style={{marginBottom: "10px"}} />
 
                             <label htmlFor="grade" className="form-label">Grade</label>
-                            <input type="number" id="grade" name="grade" className="form-control" placeholder="Grade" defaultValue={student.grade} style={{marginBottom: "50px"}} />
+                            <input type="number" id="grade" name="grade" className="form-control" placeholder="Grade" defaultValue={student.grade} style={{marginBottom: "10px"}} />
+
+                            <label htmlFor="photo" className="form-label">Photo</label>
+                            <input type="file" id="photo" name="photo" className="form-control" style={{marginBottom: "50px"}} />
 
                             <button type="submit" className="btn btn-outline-primary">Edit</button>
                         </form>
                     </div>
                 </div>
+            </div>
+
+            <div className={styles.imageContainer}>
+                <h3>User's Image:</h3>
+                <img className={styles.image} src={image} alt="Student" />
             </div>
         </Fragment>
     );

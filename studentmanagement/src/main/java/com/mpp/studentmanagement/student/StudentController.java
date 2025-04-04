@@ -1,11 +1,19 @@
 package com.mpp.studentmanagement.student;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 // silver: offline support -- local storage
@@ -56,5 +64,11 @@ public class StudentController {
     @DeleteMapping("drop-table")
     public void dropTable() {
         this.studentService.dropTable();
+    }
+
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public Resource getImage(@RequestParam String path) throws MalformedURLException {
+        Path filePath = Paths.get(path).normalize();
+        return new UrlResource(filePath.toUri());
     }
 }
