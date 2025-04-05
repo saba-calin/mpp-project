@@ -9,14 +9,36 @@ import axios from "axios";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
-    const [students, setStudents] = useState([]);
+    const [allStudents, setAllStudents] = useState([]);
     useEffect(() => {
         const fetchStudents = async () => {
-            const response = await axios.get("http://localhost:8080/api/v1/students");
-            setStudents(response.data);
+            const response = await axios.get(`http://localhost:8080/api/v1/students`);
+            setAllStudents(response.data);
         }
         fetchStudents();
     }, []);
+
+    const [scrollCount, setScrollCount] = useState(1);
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+                setScrollCount(prevCount => prevCount + 1);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+    }, []);
+
+    const [students, setStudents] = useState([]);
+    useEffect(() => {
+        const fetchStudents = async () => {
+            const count = scrollCount * 5;
+            const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+            setStudents(response.data);
+            console.log(response.data);
+        }
+        fetchStudents();
+    }, [scrollCount]);
 
     const handleDelete = async (id) => {
         await axios.delete(`http://localhost:8080/api/v1/students/${id}`);
@@ -38,7 +60,8 @@ const Home = () => {
 
     const [filterValue, setFilterValue] = useState("");
     const handleFilter = async(str) => {
-        const response = await axios.get("http://localhost:8080/api/v1/students");
+        const count = scrollCount * 5;
+        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
         if (str === "") {
             const newStudents = response.data;
 
@@ -68,7 +91,8 @@ const Home = () => {
 
     const [order, setOrder] = useState("neutral");
     const changeOrder = async () => {
-        const response = await axios.get("http://localhost:8080/api/v1/students");
+        const count = scrollCount * 5;
+        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
         setOrder((prevOrder) => {
             let newOrder = prevOrder;
             let sortedStudents = response.data;
@@ -112,7 +136,7 @@ const Home = () => {
 
 
 
-    const gradeDistribution = students.reduce(
+    const gradeDistribution = allStudents.reduce(
         (acc, student) => {
             if (student.grade >= 7) {
                 acc.high++;
@@ -125,6 +149,7 @@ const Home = () => {
         },
         { low: 0, average: 0, high: 0 }
     );
+
     const pieData = {
         labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
         datasets: [
@@ -184,7 +209,6 @@ const Home = () => {
         setIsGenerating(prev => !prev);
     };
 
-
     return (
         <Fragment>
             <HomeNavbar/>
@@ -217,10 +241,7 @@ const Home = () => {
                         <tbody>
                         {(
                             (() => {
-                                const maxGrade = Math.max(...students.map(s => s.grade));
-                                const minGrade = Math.min(...students.map(s => s.grade));
-
-                                return paginatedStudents.map(s => (
+                                return students.map(s => (
                                     <tr key={s.id}
                                         className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>
                                         <th scope="row">{s.id}</th>
@@ -243,34 +264,34 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className={styles.paginationButtons}>
-                <div className="dropdown text-center">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="true">
-                        Elements ({elements})
-                    </button>
-                    <ul className="dropdown-menu">
-                        <li className={styles.item} onClick={() => handleChangeElements(5)}>5</li>
-                        <li className={styles.item} onClick={() => handleChangeElements(6)}>6</li>
-                        <li className={styles.item} onClick={() => handleChangeElements(7)}>7</li>
-                        <li className={styles.item} onClick={() => handleChangeElements(8)}>8</li>
-                        <li className={styles.item} onClick={() => handleChangeElements(9)}>9</li>
-                        <li className={styles.item} onClick={() => handleChangeElements(10)}>10</li>
-                    </ul>
-                </div>
+            {/*<div className={styles.paginationButtons}>*/}
+            {/*    <div className="dropdown text-center">*/}
+            {/*        <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"*/}
+            {/*                aria-expanded="true">*/}
+            {/*            Elements ({elements})*/}
+            {/*        </button>*/}
+            {/*        <ul className="dropdown-menu">*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(5)}>5</li>*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(6)}>6</li>*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(7)}>7</li>*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(8)}>8</li>*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(9)}>9</li>*/}
+            {/*            <li className={styles.item} onClick={() => handleChangeElements(10)}>10</li>*/}
+            {/*        </ul>*/}
+            {/*    </div>*/}
 
-                <div className="dropdown text-center">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="true">
-                        Page ({pages})
-                    </button>
-                    <ul className="dropdown-menu">
-                        {Array.from({length: totalPages}, (_, index) => (
-                            <li key={index + 1} className={styles.item} onClick={() => handleChangePages(index + 1)}>{index + 1}</li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
+            {/*    <div className="dropdown text-center">*/}
+            {/*        <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"*/}
+            {/*                aria-expanded="true">*/}
+            {/*            Page ({pages})*/}
+            {/*        </button>*/}
+            {/*        <ul className="dropdown-menu">*/}
+            {/*            {Array.from({length: totalPages}, (_, index) => (*/}
+            {/*                <li key={index + 1} className={styles.item} onClick={() => handleChangePages(index + 1)}>{index + 1}</li>*/}
+            {/*            ))}*/}
+            {/*        </ul>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
 
             <div className={styles.paginationButtons}>
                 <div className={`${styles.pieChartContainer} text-center py-4`}>
@@ -285,7 +306,7 @@ const Home = () => {
                 </button>
             </div>
 
-            <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
+            <div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>
                 <button onClick={handleDropTable}>
                     Drop Table
                 </button>
