@@ -3,12 +3,17 @@ package com.mpp.studentmanagement.student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -22,6 +27,10 @@ public class StudentService {
 
     public List<Student> getAllStudents() {
         return this.studentRepository.findAll();
+    }
+
+    public Resource getImage(Path filePath) throws MalformedURLException {
+        return new UrlResource(filePath.toUri());
     }
 
     public void addStudent(Student student, MultipartFile photo) throws IOException {
@@ -72,6 +81,14 @@ public class StudentService {
     }
 
     public void dropTable() {
+        List<Student> students = this.studentRepository.findAll();
+        for (Student student : students) {
+            if (!student.getPath().equals(path + "/default-photo.png")) {
+                String oldPhotoPath = student.getPath();
+                File oldPhotoFile = new File(oldPhotoPath);
+                oldPhotoFile.delete();
+            }
+        }
         this.studentRepository.deleteAll();
     }
 

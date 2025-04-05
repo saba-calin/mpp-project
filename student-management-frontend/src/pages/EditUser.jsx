@@ -94,7 +94,9 @@ const EditUser = () => {
             }
         });
 
-        setImage(URL.createObjectURL(formattedData.photo));
+        if (formattedData.photo.size !== 0) {
+            setImage(URL.createObjectURL(formattedData.photo));
+        }
     }
 
     const handleDownloadImage = () => {

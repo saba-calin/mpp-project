@@ -82,7 +82,7 @@ public class StudentController {
     @GetMapping(value = "/image", produces = MediaType.IMAGE_PNG_VALUE)
     public Resource getImage(@RequestParam String path) throws MalformedURLException {
         Path filePath = Paths.get(path).normalize();
-        return new UrlResource(filePath.toUri());
+        return this.studentService.getImage(filePath);
     }
 
     @PostMapping("startStopTask")

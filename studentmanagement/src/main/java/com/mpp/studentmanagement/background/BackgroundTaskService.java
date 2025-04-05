@@ -66,8 +66,7 @@ public class BackgroundTaskService {
         String lastName = lastNames[random.nextInt(lastNames.length)];
         String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@gmail.com";
         int age = 10 + random.nextInt(91);
-        double grade = (1 + 9 * random.nextDouble());
-        grade = Math.round(grade * 100.0) / 100.0;
+        int grade = 1 + random.nextInt(10);
         String path = "/home/saba/Desktop/mpp/studentmanagement/src/main/java/com/mpp/studentmanagement/photos/default-photo.png";
 
         Student student = Student.builder()
@@ -75,7 +74,7 @@ public class BackgroundTaskService {
                 .lastName(lastName)
                 .email(email)
                 .age(age)
-                .grade(grade)
+                .grade((double) grade)
                 .path(path)
                 .build();
         this.studentRepository.save(student);
