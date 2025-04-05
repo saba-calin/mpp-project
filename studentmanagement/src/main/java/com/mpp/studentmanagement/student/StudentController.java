@@ -2,6 +2,7 @@ package com.mpp.studentmanagement.student;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mpp.studentmanagement.background.BackgroundTaskService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
     private final StudentService studentService;
+    private final BackgroundTaskService backgroundTaskService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, BackgroundTaskService backgroundTaskService) {
         this.studentService = studentService;
+        this.backgroundTaskService = backgroundTaskService;
     }
 
     @GetMapping
@@ -80,5 +83,17 @@ public class StudentController {
     public Resource getImage(@RequestParam String path) throws MalformedURLException {
         Path filePath = Paths.get(path).normalize();
         return new UrlResource(filePath.toUri());
+    }
+
+    @PostMapping("startStopTask")
+    public String startStopTask() {
+        if (!this.backgroundTaskService.isRunning()) {
+            this.backgroundTaskService.startTask();
+            return "Task started";
+        }
+        else {
+            this.backgroundTaskService.stopTask();
+            return "Task stopped";
+        }
     }
 }

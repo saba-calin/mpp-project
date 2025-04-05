@@ -209,6 +209,18 @@ const Home = () => {
         setIsGenerating(prev => !prev);
     };
 
+
+    const [isTaskRunning, setIsTaskRunning] = useState(false);
+    const handleTaskButton = async () => {
+        const response = await axios.post("http://localhost:8080/api/v1/students/startStopTask");
+        if (response.data === "Task started") {
+            setIsTaskRunning(true);
+        }
+        else {
+            setIsTaskRunning(false);
+        }
+    }
+
     return (
         <Fragment>
             <HomeNavbar/>
@@ -301,8 +313,8 @@ const Home = () => {
             </div>
 
             <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
-                <button onClick={toggleGeneration}>
-                    {isGenerating ? "Stop Generation" : "Start Generation"}
+                <button onClick={handleTaskButton}>
+                    {isTaskRunning ? "Stop Generation" : "Start Generation"}
                 </button>
             </div>
 
