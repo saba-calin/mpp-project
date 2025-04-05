@@ -7,7 +7,6 @@ import styles from "./Home.module.css";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
-import {useWebSocket} from "../useWebSocket.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -49,6 +48,7 @@ const Home = () => {
         const fetchStudents = async () => {
             const response = await axios.get("http://localhost:8080/api/v1/students");
             setStudents(response.data);
+            calculateGradeDistribution(response.data);
         }
         fetchStudents();
     }
@@ -145,15 +145,20 @@ const Home = () => {
         setGradeDistribution(distribution);
     };
 
-    // const handleWebSocketMessage = () => {
-    //     const fetchStudents = async () => {
-    //         const response = await axios.get(`http://localhost:8080/api/v1/students`);
-    //         calculateGradeDistribution(response.data);
-    //     };
-    //     fetchStudents();
-    // };
-    // useWebSocket(handleWebSocketMessage);
+    useEffect(() => {
+        const socket = new SockJS("http://localhost:8080/ws");
+        const stompClient = Stomp.over(socket);
 
+        stompClient.connect({}, () => {
+            stompClient.subscribe("/topic/gradeDistribution", () => {
+                const fetchStudents = async () => {
+                    const response = await axios.get(`http://localhost:8080/api/v1/students`);
+                    calculateGradeDistribution(response.data);
+                }
+                fetchStudents();
+            });
+        });
+    }, []);
 
 
     // const gradeDistribution = allStudents.reduce(
