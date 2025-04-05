@@ -1,5 +1,6 @@
 package com.mpp.studentmanagement.student;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -14,6 +15,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 // silver: offline support -- local storage
@@ -38,6 +40,11 @@ public class StudentController {
         return this.studentService.getAllStudents();
     }
 
+    @GetMapping("pagination")
+    public List<Student> getTopNStudents(@RequestParam(value = "count") int count) {
+        return this.studentService.getTopNStudents(count);
+    }
+
     @GetMapping("{studentId}")
     public Student getStudentById(@PathVariable("studentId") int studentId) {
         return this.studentService.getStudentById(studentId);
@@ -52,8 +59,11 @@ public class StudentController {
     }
 
     @PutMapping
-    public void updateStudent(@RequestBody Student student) {
-        this.studentService.updateStudent(student);
+    public void updateStudent(@RequestPart("student") String studentJson,
+                              @RequestPart(value = "photo", required = false) MultipartFile photo) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Student student = objectMapper.readValue(studentJson, Student.class);
+        this.studentService.updateStudent(student, photo);
     }
 
     @DeleteMapping("{studentId}")

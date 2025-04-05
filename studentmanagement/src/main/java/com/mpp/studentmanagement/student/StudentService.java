@@ -3,6 +3,7 @@ package com.mpp.studentmanagement.student;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,13 +38,29 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(Student student) {
+    public void updateStudent(Student student, MultipartFile photo) throws IOException {
         Student existingStudent = this.studentRepository.findById(student.getId()).orElseThrow(() -> new RuntimeException("Student not found"));
         existingStudent.setFirstName(student.getFirstName());
         existingStudent.setLastName(student.getLastName());
         existingStudent.setEmail(student.getEmail());
         existingStudent.setAge(student.getAge());
         existingStudent.setGrade(student.getGrade());
+
+        if (photo.isEmpty()) {
+            return;
+        }
+
+        // delete the old photo if it is not the default
+        if (!existingStudent.getPath().equals(path + "/default-photo.png")) {
+            String oldPhotoPath = existingStudent.getPath();
+            File oldPhotoFile = new File(oldPhotoPath);
+            oldPhotoFile.delete();
+        }
+
+        // upload the new photo
+        String filePath = path + "/" + existingStudent.getId() + ".png";
+        photo.transferTo(new File(filePath));
+        existingStudent.setPath(filePath);
     }
 
     public Student getStudentById(int studentId) {
@@ -56,5 +73,9 @@ public class StudentService {
 
     public void dropTable() {
         this.studentRepository.deleteAll();
+    }
+
+    public List<Student> getTopNStudents(int count) {
+        return this.studentRepository.findAll(PageRequest.of(0, count)).getContent();
     }
 }

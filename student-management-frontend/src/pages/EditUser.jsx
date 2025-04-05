@@ -11,7 +11,6 @@ const EditUser = () => {
     // }, []);
 
     const {id} = useParams();
-    const numericId = Number(id);
 
     const [student, setStudent] = useState([]);
     const [image, setImage] = useState([]);
@@ -89,11 +88,17 @@ const EditUser = () => {
             grade: formattedData.grade
         }
 
-        axios.put('http://localhost:8080/api/v1/students', student, {
+        const formData = new FormData();
+        formData.append('student', JSON.stringify(student));
+        formData.append('photo', formattedData.photo);
+
+        axios.put('http://localhost:8080/api/v1/students', formData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data'
             }
         });
+
+        setImage(URL.createObjectURL(formattedData.photo));
     }
 
     // if (!student) {
