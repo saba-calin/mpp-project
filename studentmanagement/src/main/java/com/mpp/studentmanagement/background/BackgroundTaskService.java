@@ -1,5 +1,6 @@
 package com.mpp.studentmanagement.background;
 
+import com.mpp.studentmanagement.socket.WebSocketController;
 import com.mpp.studentmanagement.student.Student;
 import com.mpp.studentmanagement.student.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,13 @@ import java.util.Random;
 public class BackgroundTaskService {
     private boolean isRunning = false;
     private Thread backgroundThread;
-    private final StudentRepository studentRepository;
 
-    public BackgroundTaskService(StudentRepository studentRepository) {
+    private final StudentRepository studentRepository;
+    private final WebSocketController webSocketController;
+
+    public BackgroundTaskService(StudentRepository studentRepository, WebSocketController webSocketController) {
         this.studentRepository = studentRepository;
+        this.webSocketController = webSocketController;
     }
 
     public void startTask() {
@@ -22,6 +26,8 @@ public class BackgroundTaskService {
             backgroundThread = new Thread(() -> {
                 while (isRunning) {
                     addStudent();
+                    this.webSocketController.sendUpdateToClients();
+
                     try {
                         Thread.sleep(1000);
                     }
