@@ -2,6 +2,8 @@ import {useEffect} from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
+window.global = window;
+
 export const useWebSocket = (onMessageReceived) => {
     useEffect(() => {
         const client = new Client({
@@ -13,16 +15,8 @@ export const useWebSocket = (onMessageReceived) => {
                     }
                 });
             },
-            onDisconnect: () => {
-                console.log("Disconnected from WebSocket");
-            },
             webSocketFactory: () => new SockJS("http://localhost:8080/ws")
         });
-
         client.activate();
-
-        return () => {
-            client.deactivate();
-        };
     }, [onMessageReceived]);
 }

@@ -5,6 +5,9 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import styles from "./Home.module.css";
 import axios from "axios";
+import SockJS from "sockjs-client";
+import {Stomp} from "@stomp/stompjs";
+import {useWebSocket} from "../useWebSocket.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -14,6 +17,7 @@ const Home = () => {
         const fetchStudents = async () => {
             const response = await axios.get(`http://localhost:8080/api/v1/students`);
             setAllStudents(response.data);
+            calculateGradeDistribution(response.data);
         }
         fetchStudents();
     }, []);
@@ -54,6 +58,7 @@ const Home = () => {
         const fetchStudents = async () => {
             const response = await axios.get("http://localhost:8080/api/v1/students");
             setStudents(response.data);
+            calculateGradeDistribution(response.data);
         }
         fetchStudents();
     }
@@ -121,34 +126,49 @@ const Home = () => {
         });
     }
 
-    const [elements, setElements] = useState(5);
-    const handleChangeElements = (num) => {
-        setElements(num);
-    }
 
-    const [pages, setPages] = useState(1);
-    const handleChangePages = (num) => {
-        setPages(num);
-    }
+    const [gradeDistribution, setGradeDistribution] = useState({ low: 0, average: 0, high: 0 });
+    const calculateGradeDistribution = (students) => {
+        const distribution = students.reduce(
+            (acc, student) => {
+                if (student.grade >= 7) {
+                    acc.high++;
+                } else if (student.grade >= 5) {
+                    acc.average++;
+                } else {
+                    acc.low++;
+                }
+                return acc;
+            },
+            { low: 0, average: 0, high: 0 }
+        );
+        setGradeDistribution(distribution);
+    };
 
-    const totalPages = Math.ceil(students.length / elements);
-    const paginatedStudents = students.slice((pages - 1) * elements, pages * elements);
+    // const handleWebSocketMessage = () => {
+    //     const fetchStudents = async () => {
+    //         const response = await axios.get(`http://localhost:8080/api/v1/students`);
+    //         calculateGradeDistribution(response.data);
+    //     };
+    //     fetchStudents();
+    // };
+    // useWebSocket(handleWebSocketMessage);
 
 
 
-    const gradeDistribution = allStudents.reduce(
-        (acc, student) => {
-            if (student.grade >= 7) {
-                acc.high++;
-            } else if (student.grade >= 5) {
-                acc.average++;
-            } else {
-                acc.low++;
-            }
-            return acc;
-        },
-        { low: 0, average: 0, high: 0 }
-    );
+    // const gradeDistribution = allStudents.reduce(
+    //     (acc, student) => {
+    //         if (student.grade >= 7) {
+    //             acc.high++;
+    //         } else if (student.grade >= 5) {
+    //             acc.average++;
+    //         } else {
+    //             acc.low++;
+    //         }
+    //         return acc;
+    //     },
+    //     { low: 0, average: 0, high: 0 }
+    // );
 
     const pieData = {
         labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
@@ -275,35 +295,6 @@ const Home = () => {
                     </table>
                 </div>
             </div>
-
-            {/*<div className={styles.paginationButtons}>*/}
-            {/*    <div className="dropdown text-center">*/}
-            {/*        <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"*/}
-            {/*                aria-expanded="true">*/}
-            {/*            Elements ({elements})*/}
-            {/*        </button>*/}
-            {/*        <ul className="dropdown-menu">*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(5)}>5</li>*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(6)}>6</li>*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(7)}>7</li>*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(8)}>8</li>*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(9)}>9</li>*/}
-            {/*            <li className={styles.item} onClick={() => handleChangeElements(10)}>10</li>*/}
-            {/*        </ul>*/}
-            {/*    </div>*/}
-
-            {/*    <div className="dropdown text-center">*/}
-            {/*        <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"*/}
-            {/*                aria-expanded="true">*/}
-            {/*            Page ({pages})*/}
-            {/*        </button>*/}
-            {/*        <ul className="dropdown-menu">*/}
-            {/*            {Array.from({length: totalPages}, (_, index) => (*/}
-            {/*                <li key={index + 1} className={styles.item} onClick={() => handleChangePages(index + 1)}>{index + 1}</li>*/}
-            {/*            ))}*/}
-            {/*        </ul>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
 
             <div className={styles.paginationButtons}>
                 <div className={`${styles.pieChartContainer} text-center py-4`}>

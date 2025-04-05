@@ -19,16 +19,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-// silver: offline support -- local storage
-// endless scrolling
-// server deployed
 
-// gold: generation on the backend
-// photo upload
-// path
 @RestController
 @RequestMapping("api/v1/students")
-@CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
     private final StudentService studentService;
     private final BackgroundTaskService backgroundTaskService;
