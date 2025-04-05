@@ -3,13 +3,9 @@ import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./EditUser.module.css"
+import Button from "bootstrap/js/src/button.js";
 
 const EditUser = () => {
-    // const [students, setStudents] = useState([]);
-    // useEffect(() => {
-    //     setStudents(JSON.parse(localStorage.getItem("students")) ?? []);
-    // }, []);
-
     const {id} = useParams();
 
     const [student, setStudent] = useState([]);
@@ -101,14 +97,13 @@ const EditUser = () => {
         setImage(URL.createObjectURL(formattedData.photo));
     }
 
-    // if (!student) {
-    //     return (
-    //         <Fragment>
-    //             <AddUserNavbar />
-    //             <div>Loading...</div>
-    //         </Fragment>
-    //     );
-    // }
+    const handleDownloadImage = () => {
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `student_image_${id}.jpg`;
+        link.click();
+    }
+
     return (
         <Fragment>
             <AddUserNavbar />
@@ -146,7 +141,13 @@ const EditUser = () => {
 
             <div className={styles.imageContainer}>
                 <h3>User's Image:</h3>
-                <img className={styles.image} src={image} alt="Student" />
+                <img className={styles.image} src={image} alt="Student Image" />
+            </div>
+
+            <div className={styles.center}>
+                <button className={styles.downloadButton} onClick={handleDownloadImage}>
+                    Download Image
+                </button>
             </div>
         </Fragment>
     );

@@ -9,3 +9,14 @@
     width: 400px;
     height: 400px;
 }
+
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.downloadButton {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
