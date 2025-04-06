@@ -78,6 +78,12 @@ public class StudentService {
 
     public void deleteStudent(int studentId) {
         this.studentRepository.deleteById(studentId);
+        // delete the photo if it is not the default
+        String filePath = path + "/" + studentId + ".png";
+        File photoFile = new File(filePath);
+        if (photoFile.exists()) {
+            photoFile.delete();
+        }
     }
 
     public void dropTable() {

@@ -63,6 +63,7 @@ const Home = () => {
         fetchStudents();
     }
 
+    const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         axios.get("http://localhost:8080/api/health")
             .then(() => {
