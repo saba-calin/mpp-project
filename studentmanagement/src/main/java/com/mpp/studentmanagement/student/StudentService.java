@@ -37,11 +37,11 @@ public class StudentService {
         Student savedStudent = this.studentRepository.save(student);
 
         if (photo == null || photo.isEmpty()) {
-            this.studentRepository.updateStudentPhotoPath(savedStudent.getId(), path + "/default-photo.png");
+            this.studentRepository.updateStudentPhotoPath(savedStudent.getId(), path + "/default-photo.jpg");
             return;
         }
 
-        String filePath = path + "/" + savedStudent.getId() + ".png";
+        String filePath = path + "/" + savedStudent.getId() + ".jpg";
         photo.transferTo(new File(filePath));
         this.studentRepository.updateStudentPhotoPath(savedStudent.getId(), filePath);
     }
@@ -60,14 +60,14 @@ public class StudentService {
         }
 
         // delete the old photo if it is not the default
-        if (!existingStudent.getPath().equals(path + "/default-photo.png")) {
+        if (!existingStudent.getPath().equals(path + "/default-photo.jpg")) {
             String oldPhotoPath = existingStudent.getPath();
             File oldPhotoFile = new File(oldPhotoPath);
             oldPhotoFile.delete();
         }
 
         // upload the new photo
-        String filePath = path + "/" + existingStudent.getId() + ".png";
+        String filePath = path + "/" + existingStudent.getId() + ".jpg";
         photo.transferTo(new File(filePath));
         existingStudent.setPath(filePath);
     }
@@ -79,7 +79,7 @@ public class StudentService {
     public void deleteStudent(int studentId) {
         this.studentRepository.deleteById(studentId);
         // delete the photo if it is not the default
-        String filePath = path + "/" + studentId + ".png";
+        String filePath = path + "/" + studentId + ".jpg";
         File photoFile = new File(filePath);
         if (photoFile.exists()) {
             photoFile.delete();
@@ -89,7 +89,7 @@ public class StudentService {
     public void dropTable() {
         List<Student> students = this.studentRepository.findAll();
         for (Student student : students) {
-            if (!student.getPath().equals(path + "/default-photo.png")) {
+            if (!student.getPath().equals(path + "/default-photo.jpg")) {
                 String oldPhotoPath = student.getPath();
                 File oldPhotoFile = new File(oldPhotoPath);
                 oldPhotoFile.delete();

@@ -73,7 +73,7 @@ public class BackgroundTaskService {
         String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@gmail.com";
         int age = 10 + random.nextInt(91);
         int grade = 1 + random.nextInt(10);
-        String path = "/home/saba/Desktop/mpp/studentmanagement/src/main/java/com/mpp/studentmanagement/photos/default-photo.png";
+        String path = "/home/saba/Desktop/mpp/studentmanagement/src/main/java/com/mpp/studentmanagement/photos/default-photo.jpg";
 
         Student student = Student.builder()
                 .firstName(firstName)
