@@ -3,6 +3,7 @@ import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useLocalStorage} from "../useLocalStorage.js";
 import axios from "axios";
 import styles from "./AddUser.module.css";
+import {serverUrl} from "../serverUrl.js";
 
 export const getId = () => {
     const students = JSON.parse(localStorage.getItem('students')) ?? [];
@@ -104,7 +105,7 @@ const AddUser = () => {
         formData.append('student', JSON.stringify(student));
         formData.append('photo', formattedData.photo);
 
-        axios.post('http://localhost:8080/api/v1/students', formData, {
+        axios.post(`${serverUrl}/api/v1/students`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -114,7 +115,7 @@ const AddUser = () => {
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get("http://localhost:8080/api/health")
+            axios.get(`${serverUrl}/api/health`)
                 .then(() => {
                     setServerStatus(true);
                 })

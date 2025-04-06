@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./EditUser.module.css"
 import Button from "bootstrap/js/src/button.js";
+import {serverUrl} from "../serverUrl.js";
 
 const EditUser = () => {
     const {id} = useParams();
@@ -12,11 +13,11 @@ const EditUser = () => {
     const [image, setImage] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get(`http://localhost:8080/api/v1/students/${id}`);
+            const response = await axios.get(`${serverUrl}/api/v1/students/${id}`);
             setStudent(response.data);
 
             const img = await axios.get(
-                `http://localhost:8080/api/v1/students/image?path=${response.data.path}`,
+                `${serverUrl}/api/v1/students/image?path=${response.data.path}`,
                 { responseType: 'blob' }
             );
             const imageURL = URL.createObjectURL(img.data);
@@ -121,7 +122,7 @@ const EditUser = () => {
 
         console.log(formData);
 
-        axios.put('http://localhost:8080/api/v1/students', formData, {
+        axios.put(`${serverUrl}/api/v1/students`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -146,7 +147,7 @@ const EditUser = () => {
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get("http://localhost:8080/api/health")
+            axios.get(`${serverUrl}/api/health`)
                 .then(() => {
                     setServerStatus(true);
                 })

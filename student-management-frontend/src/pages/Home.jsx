@@ -7,13 +7,14 @@ import styles from "./Home.module.css";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
+import {serverUrl} from "../serverUrl.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
     const [allStudents, setAllStudents] = useState([]);
     useEffect(() => {
         const fetchStudents = async () => {
-            const response = await axios.get(`http://localhost:8080/api/v1/students`);
+            const response = await axios.get(`${serverUrl}/api/v1/students`);
             setAllStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -35,7 +36,7 @@ const Home = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             const count = scrollCount * 5;
-            const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
             setStudents(response.data);
             console.log(response.data);
         }
@@ -50,9 +51,9 @@ const Home = () => {
             return;
         }
 
-        await axios.delete(`http://localhost:8080/api/v1/students/${id}`);
+        await axios.delete(`${serverUrl}/api/v1/students/${id}`);
         const fetchStudents = async () => {
-            const response = await axios.get("http://localhost:8080/api/v1/students");
+            const response = await axios.get(`${serverUrl}/api/v1/students`);
             setStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -60,9 +61,9 @@ const Home = () => {
     }
 
     const handleDropTable = async () => {
-        await axios.delete("http://localhost:8080/api/v1/students/drop-table")
+        await axios.delete(`${serverUrl}/api/v1/students/drop-table`)
         const fetchStudents = async () => {
-            const response = await axios.get("http://localhost:8080/api/v1/students");
+            const response = await axios.get(`${serverUrl}/api/v1/students`);
             setStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -71,12 +72,12 @@ const Home = () => {
 
 
     const fetchStudentsForPieChart = async () => {
-        const response = await axios.get("http://localhost:8080/api/v1/students");
+        const response = await axios.get(`${serverUrl}/api/v1/students`);
         calculateGradeDistribution(response.data);
     }
     const fetchStudentsForDisplay = async () => {
         const count = scrollCount * 5;
-        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
         setStudents(response.data);
     }
     const syncDeletedStudents = async () => {
@@ -85,7 +86,7 @@ const Home = () => {
 
         for (const entry of deletedStudents) {
             deleted = true;
-            await axios.delete(`http://localhost:8080/api/v1/students/${entry}`);
+            await axios.delete(`${serverUrl}/api/v1/students/${entry}`);
         }
         localStorage.removeItem("deleted");
 
@@ -109,7 +110,7 @@ const Home = () => {
                 formData.append('photo', blob, 'image.jpg');
             }
 
-            await axios.put('http://localhost:8080/api/v1/students', formData, {
+            await axios.put(`${serverUrl}/api/v1/students`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -137,7 +138,7 @@ const Home = () => {
                 formData.append('photo', blob, 'image.jpg');
             }
 
-            await axios.post('http://localhost:8080/api/v1/students', formData, {
+            await axios.post(`${serverUrl}/api/v1/students`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -158,7 +159,7 @@ const Home = () => {
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get("http://localhost:8080/api/health")
+            axios.get(`${serverUrl}/api/health`)
                 .then(() => {
                     syncLocalEdits();
                     setServerStatus(true);
@@ -174,7 +175,7 @@ const Home = () => {
     const [filterValue, setFilterValue] = useState("");
     const handleFilter = async(str) => {
         const count = scrollCount * 5;
-        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
         if (str === "") {
             const newStudents = response.data;
 
@@ -205,7 +206,7 @@ const Home = () => {
     const [order, setOrder] = useState("neutral");
     const changeOrder = async () => {
         const count = scrollCount * 5;
-        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
         setOrder((prevOrder) => {
             let newOrder = prevOrder;
             let sortedStudents = response.data;
@@ -254,13 +255,13 @@ const Home = () => {
     };
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/ws");
+        const socket = new SockJS(`${serverUrl}/ws`);
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, () => {
             stompClient.subscribe("/topic/gradeDistribution", () => {
                 const fetchStudents = async () => {
-                    const response = await axios.get(`http://localhost:8080/api/v1/students`);
+                    const response = await axios.get(`${serverUrl}/api/v1/students`);
                     calculateGradeDistribution(response.data);
                 }
                 fetchStudents();
@@ -282,7 +283,7 @@ const Home = () => {
 
     const [isTaskRunning, setIsTaskRunning] = useState(false);
     const handleTaskButton = async () => {
-        const response = await axios.post("http://localhost:8080/api/v1/students/startStopTask");
+        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`);
         if (response.data === "Task started") {
             setIsTaskRunning(true);
         }
@@ -292,7 +293,7 @@ const Home = () => {
     }
     useEffect(() => {
         const getTaskStatus = async () => {
-            const response = await axios.get("http://localhost:8080/api/v1/students/getTaskStatus");
+            const response = await axios.get(`${serverUrl}/api/v1/students/getTaskStatus`);
             if (response.data === "Task is running") {
                 setIsTaskRunning(true);
             }
