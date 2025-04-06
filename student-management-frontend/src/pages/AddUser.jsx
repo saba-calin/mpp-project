@@ -1,7 +1,8 @@
-import {Fragment} from "react";
+import {Fragment, useEffect, useState} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
 import {useLocalStorage} from "../useLocalStorage.js";
 import axios from "axios";
+import styles from "./AddUser.module.css";
 
 export const getId = () => {
     const students = JSON.parse(localStorage.getItem('students')) ?? [];
@@ -16,8 +17,6 @@ export const getId = () => {
 }
 
 const AddUser = () => {
-    const [storedData, setStoredData] = useLocalStorage('students', []);
-
     const handleSubmit = (eventObj) => {
         eventObj.preventDefault();
 
@@ -62,15 +61,43 @@ const AddUser = () => {
             return;
         }
 
-        // alert("Student added successfully");
-        // setStoredData([...storedData, {...formattedData, "id": getId()}]);
-
         const student = {
             firstName: formattedData.first_name,
             lastName: formattedData.last_name,
             email: formattedData.email,
             age: formattedData.age,
             grade: formattedData.grade
+        }
+
+        if (serverStatus === false) {
+            const addedStudents = JSON.parse(localStorage.getItem("added")) || [];
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64Photo = reader.result;
+
+                const newStudent = {
+                    student,
+                    photo: base64Photo
+                };
+
+                addedStudents.push(newStudent);
+                localStorage.setItem("added", JSON.stringify(addedStudents));
+            };
+
+            if (formattedData.photo.size !== 0) {
+                reader.readAsDataURL(formattedData.photo);
+            }
+            else {
+                const newStudent = {
+                    student,
+                    photo: ""
+                };
+                addedStudents.push(newStudent);
+                localStorage.setItem("added", JSON.stringify(addedStudents));
+            }
+
+            return;
         }
 
         const formData = new FormData();
@@ -82,18 +109,32 @@ const AddUser = () => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-
-        // http://172.21.0.3:8080/api/v1/students
-        // axios.post('http://localhost:8080/api/v1/students', student, {
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
     }
+
+    const [serverStatus, setServerStatus] = useState(true);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            axios.get("http://localhost:8080/api/health")
+                .then(() => {
+                    setServerStatus(true);
+                })
+                .catch(() => {
+                    setServerStatus(false);
+                });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <Fragment>
             <AddUserNavbar />
+
+            <div className={styles.statusContainer}>
+                <p>Status: {serverStatus ? "Online" : "Offline"}</p>
+                <div className={serverStatus ? styles.onlineStatusCircle : styles.offlineStatusCircle} />
+            </div>
+
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">

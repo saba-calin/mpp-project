@@ -71,10 +71,6 @@ const EditUser = () => {
             return;
         }
 
-        // alert("Student edited successfully");
-        // const newStudents = students.filter(s => s.id !== numericId);
-        // localStorage.setItem("students", JSON.stringify([...newStudents, {...formattedData, "id": numericId}]))
-
         const student = {
             id: id,
             firstName: formattedData.first_name,
@@ -85,31 +81,31 @@ const EditUser = () => {
         }
 
         if (serverStatus === false) {
-            const storedStudents = JSON.parse(localStorage.getItem("updated")) || [];
+            const updatedStudents = JSON.parse(localStorage.getItem("updated")) || [];
 
             const reader = new FileReader();
-            reader.onload = function () {
+            reader.onload = () => {
                 const base64Photo = reader.result;
 
                 const newStudent = {
                     student,
-                    photo: base64Photo  // This is the base64 string
+                    photo: base64Photo
                 };
 
-                storedStudents.push(newStudent);
-                localStorage.setItem("updated", JSON.stringify(storedStudents));
+                updatedStudents.push(newStudent);
+                localStorage.setItem("updated", JSON.stringify(updatedStudents));
             };
 
             if (formattedData.photo.size !== 0) {
-                reader.readAsDataURL(formattedData.photo); // Convert image to base64
+                reader.readAsDataURL(formattedData.photo);
             }
             else {
                 const newStudent = {
                     student,
                     photo: ""
                 };
-                storedStudents.push(newStudent);
-                localStorage.setItem("updated", JSON.stringify(storedStudents));
+                updatedStudents.push(newStudent);
+                localStorage.setItem("updated", JSON.stringify(updatedStudents));
             }
 
             if (formattedData.photo.size !== 0) {
@@ -147,36 +143,11 @@ const EditUser = () => {
         link.click();
     }
 
-    const syncLocalEdits = async () => {
-        const storedStudents = JSON.parse(localStorage.getItem("updated")) || [];
-
-        for (const entry of storedStudents) {
-            const formData = new FormData();
-            formData.append('student', JSON.stringify(entry.student));
-
-            if (entry.photo) {
-                // Convert base64 back to Blob
-                const res = await fetch(entry.photo);
-                const blob = await res.blob();
-                formData.append('photo', blob, 'image.jpg');
-            }
-
-            await axios.put('http://localhost:8080/api/v1/students', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-        }
-
-        localStorage.removeItem("updated");
-    };
-
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
             axios.get("http://localhost:8080/api/health")
                 .then(() => {
-                    syncLocalEdits();
                     setServerStatus(true);
                 })
                 .catch(() => {

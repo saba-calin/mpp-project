@@ -7,7 +7,6 @@ import styles from "./Home.module.css";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
-
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
@@ -44,6 +43,13 @@ const Home = () => {
     }, [scrollCount]);
 
     const handleDelete = async (id) => {
+        if (serverStatus === false) {
+            const deletedStudents = JSON.parse(localStorage.getItem("deleted")) || [];
+            deletedStudents.push(id);
+            localStorage.setItem("deleted", JSON.stringify(deletedStudents));
+            return;
+        }
+
         await axios.delete(`http://localhost:8080/api/v1/students/${id}`);
         const fetchStudents = async () => {
             const response = await axios.get("http://localhost:8080/api/v1/students");
@@ -63,11 +69,98 @@ const Home = () => {
         fetchStudents();
     }
 
+
+    const fetchStudentsForPieChart = async () => {
+        const response = await axios.get("http://localhost:8080/api/v1/students");
+        calculateGradeDistribution(response.data);
+    }
+    const fetchStudentsForDisplay = async () => {
+        const count = scrollCount * 5;
+        const response = await axios.get(`http://localhost:8080/api/v1/students/pagination?count=${count}`);
+        setStudents(response.data);
+    }
+    const syncDeletedStudents = async () => {
+        const deletedStudents = JSON.parse(localStorage.getItem("deleted")) || [];
+        let deleted = false;
+
+        for (const entry of deletedStudents) {
+            deleted = true;
+            await axios.delete(`http://localhost:8080/api/v1/students/${entry}`);
+        }
+        localStorage.removeItem("deleted");
+
+        if (deleted === true) {
+            fetchStudentsForDisplay();
+            fetchStudentsForPieChart();
+        }
+    }
+    const syncUpdatedStudents = async () => {
+        const updatedStudents = JSON.parse(localStorage.getItem("updated")) || [];
+        let updated = false;
+
+        for (const entry of updatedStudents) {
+            updated = true;
+            const formData = new FormData();
+            formData.append('student', JSON.stringify(entry.student));
+
+            if (entry.photo) {
+                const res = await fetch(entry.photo);
+                const blob = await res.blob();
+                formData.append('photo', blob, 'image.jpg');
+            }
+
+            await axios.put('http://localhost:8080/api/v1/students', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        }
+        localStorage.removeItem("updated")
+
+        if (updated === true) {
+            fetchStudentsForDisplay();
+            fetchStudentsForPieChart();
+        }
+    }
+    const syncAddedStudents = async () => {
+        const addedStudents = JSON.parse(localStorage.getItem("added")) || [];
+        let added = false;
+
+        for (const entry of addedStudents) {
+            added = true;
+            const formData = new FormData();
+            formData.append('student', JSON.stringify(entry.student));
+
+            if (entry.photo) {
+                const res = await fetch(entry.photo);
+                const blob = await res.blob();
+                formData.append('photo', blob, 'image.jpg');
+            }
+
+            await axios.post('http://localhost:8080/api/v1/students', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        }
+        localStorage.removeItem("added");
+
+        if (added === true) {
+            fetchStudentsForDisplay();
+            fetchStudentsForPieChart();
+        }
+    }
+    const syncLocalEdits = async () => {
+        syncDeletedStudents();
+        syncUpdatedStudents();
+        syncAddedStudents();
+    }
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
             axios.get("http://localhost:8080/api/health")
                 .then(() => {
+                    syncLocalEdits();
                     setServerStatus(true);
                 })
                 .catch(() => {
@@ -175,21 +268,6 @@ const Home = () => {
         });
     }, []);
 
-
-    // const gradeDistribution = allStudents.reduce(
-    //     (acc, student) => {
-    //         if (student.grade >= 7) {
-    //             acc.high++;
-    //         } else if (student.grade >= 5) {
-    //             acc.average++;
-    //         } else {
-    //             acc.low++;
-    //         }
-    //         return acc;
-    //     },
-    //     { low: 0, average: 0, high: 0 }
-    // );
-
     const pieData = {
         labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
         datasets: [
@@ -199,54 +277,6 @@ const Home = () => {
                 hoverBackgroundColor: ['#FF6384', '#FFCD56', '#9aeb36'],
             },
         ],
-    };
-
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [intervalId, setIntervalId] = useState(null);
-
-    useEffect(() => {
-        if (isGenerating) {
-            const id = setInterval(() => {
-                const randomFirstNames = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ivy", "Jack", "Kathy", "Leo", "Mona", "Nina", "Oscar", "Paul", "Quincy", "Rachel", "Sam", "Tina"];
-                const randomLastNames = ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Roberts"];
-
-                const firstName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];
-                const lastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];
-                const email = `${firstName}.${lastName}@gmail.com`;
-                const age = Math.random() < 0.5 ? Math.floor(Math.random() * 10) + 18 : Math.floor(Math.random() * 10) + 25;
-                const grade = Math.floor(Math.random() * 10) + 1;
-
-                const newStudent = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    age: age,
-                    email: email,
-                    grade: grade
-                };
-
-                axios.post('http://localhost:8080/api/v1/students', newStudent, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const fetchStudents = async () => {
-                    const response = await axios.get("http://localhost:8080/api/v1/students");
-                    setStudents(response.data);
-                }
-                fetchStudents();
-            }, 10);
-
-            setIntervalId(id);
-        }
-        else {
-            clearInterval(intervalId);
-        }
-
-        return () => clearInterval(intervalId);
-    }, [isGenerating]);
-
-    const toggleGeneration = () => {
-        setIsGenerating(prev => !prev);
     };
 
 

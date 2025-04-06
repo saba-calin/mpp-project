@@ -36,7 +36,7 @@ public class StudentService {
     public void addStudent(Student student, MultipartFile photo) throws IOException {
         Student savedStudent = this.studentRepository.save(student);
 
-        if (photo.isEmpty()) {
+        if (photo == null || photo.isEmpty()) {
             this.studentRepository.updateStudentPhotoPath(savedStudent.getId(), path + "/default-photo.png");
             return;
         }
