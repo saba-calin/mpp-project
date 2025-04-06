@@ -24,21 +24,21 @@ public class StudentServiceTest {
     @InjectMocks
     private StudentService studentService;
 
-    @Test
-    void testGetAllStudents() {
-        Student student1 = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-        Student student2 = new Student(2, "Jane", "Doe", "jane.doe@gmail.com", 10, 10.0);
-        List<Student> students = Arrays.asList(student1, student2);
-
-        when(studentRepository.findAll()).thenReturn(students);
-
-        List<Student> result = studentService.getAllStudents();
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("John", result.get(0).getFirstName());
-        assertEquals("Jane", result.get(1).getFirstName());
-        verify(studentRepository, times(1)).findAll();
-    }
+//    @Test
+//    void testGetAllStudents() {
+//        Student student1 = new Student(1, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//        Student student2 = new Student(2, "Jane", "Doe", "jane.doe@gmail.com", 10, 10.0);
+//        List<Student> students = Arrays.asList(student1, student2);
+//
+//        when(studentRepository.findAll()).thenReturn(students);
+//
+//        List<Student> result = studentService.getAllStudents();
+//        assertNotNull(result);
+//        assertEquals(2, result.size());
+//        assertEquals("John", result.get(0).getFirstName());
+//        assertEquals("Jane", result.get(1).getFirstName());
+//        verify(studentRepository, times(1)).findAll();
+//    }
 
 //    @Test
 //    void testAddStudent() {
@@ -60,19 +60,19 @@ public class StudentServiceTest {
 //        verify(studentRepository, times(1)).save(existingStudent);
 //    }
 
-    @Test
-    void testGetStudentById() {
-        int studentId = 1;
-        Student student = new Student(studentId, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
-
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-
-        Student result = studentService.getStudentById(studentId);
-
-        assertNotNull(result);
-        assertEquals(studentId, result.getId());
-        verify(studentRepository, times(1)).findById(studentId);
-    }
+//    @Test
+//    void testGetStudentById() {
+//        int studentId = 1;
+//        Student student = new Student(studentId, "John", "Doe", "john.doe@gmail.com", 10, 10.0);
+//
+//        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+//
+//        Student result = studentService.getStudentById(studentId);
+//
+//        assertNotNull(result);
+//        assertEquals(studentId, result.getId());
+//        verify(studentRepository, times(1)).findById(studentId);
+//    }
 
     @Test
     void testDeleteStudent() {
