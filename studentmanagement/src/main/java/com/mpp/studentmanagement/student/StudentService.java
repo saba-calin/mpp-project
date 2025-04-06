@@ -19,10 +19,15 @@ import java.util.List;
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
-    private final String path = "/home/saba/Desktop/mpp/studentmanagement/src/main/java/com/mpp/studentmanagement/photos";
+    private final String path = Paths.get("photos").toAbsolutePath().toString();
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
+
+        File directory = new File(path);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
     }
 
     public List<Student> getAllStudents() {
@@ -30,6 +35,7 @@ public class StudentService {
     }
 
     public Resource getImage(Path filePath) throws MalformedURLException {
+        System.out.println(filePath);
         return new UrlResource(filePath.toUri());
     }
 
