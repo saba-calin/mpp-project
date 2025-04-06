@@ -63,6 +63,16 @@ const Home = () => {
         fetchStudents();
     }
 
+    useEffect(() => {
+        axios.get("http://localhost:8080/api/health")
+            .then(() => {
+                console.log('Backend is up');
+            })
+            .catch(() => {
+                console.log('Backend is down');
+            });
+    }, []);
+
     const [filterValue, setFilterValue] = useState("");
     const handleFilter = async(str) => {
         const count = scrollCount * 5;
@@ -245,6 +255,18 @@ const Home = () => {
             setIsTaskRunning(false);
         }
     }
+    useEffect(() => {
+        const getTaskStatus = async () => {
+            const response = await axios.get("http://localhost:8080/api/v1/students/getTaskStatus");
+            if (response.data === "Task is running") {
+                setIsTaskRunning(true);
+            }
+            else {
+                setIsTaskRunning(false);
+            }
+        }
+        getTaskStatus();
+    }, []);
 
     return (
         <Fragment>
