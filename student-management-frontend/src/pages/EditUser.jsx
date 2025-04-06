@@ -106,9 +106,29 @@ const EditUser = () => {
         link.click();
     }
 
+    const [serverStatus, setServerStatus] = useState(true);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            axios.get("http://localhost:8080/api/health")
+                .then(() => {
+                    setServerStatus(true);
+                })
+                .catch(() => {
+                    setServerStatus(false);
+                });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <Fragment>
             <AddUserNavbar />
+
+            <div className={styles.statusContainer}>
+                <p>Status: {serverStatus ? "Online" : "Offline"}</p>
+                <div className={serverStatus ? styles.onlineStatusCircle : styles.offlineStatusCircle} />
+            </div>
 
             <div className="container">
                 <div className="row">

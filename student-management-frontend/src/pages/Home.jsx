@@ -65,13 +65,17 @@ const Home = () => {
 
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
-        axios.get("http://localhost:8080/api/health")
-            .then(() => {
-                console.log('Backend is up');
-            })
-            .catch(() => {
-                console.log('Backend is down');
-            });
+        const interval = setInterval(() => {
+            axios.get("http://localhost:8080/api/health")
+                .then(() => {
+                    setServerStatus(true);
+                })
+                .catch(() => {
+                    setServerStatus(false);
+                });
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const [filterValue, setFilterValue] = useState("");
@@ -272,6 +276,12 @@ const Home = () => {
     return (
         <Fragment>
             <HomeNavbar/>
+
+            <div className={styles.statusContainer}>
+                <p>Status: {serverStatus ? "Online" : "Offline"}</p>
+                <div className={serverStatus ? styles.onlineStatusCircle : styles.offlineStatusCircle} />
+            </div>
+
             <div className="text-center" style={{marginTop: "10px"}}>
                 <label htmlFor="filter" style={{marginRight: "10px"}}>Filter By First Name:</label>
                 <input type="text" name="filter" id="filter" style={{marginRight: "10px"}} onChange={(e) => {
