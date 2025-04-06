@@ -55,7 +55,7 @@ public class StudentService {
         existingStudent.setAge(student.getAge());
         existingStudent.setGrade(student.getGrade());
 
-        if (photo.isEmpty()) {
+        if (photo == null || photo.isEmpty()) {
             return;
         }
 

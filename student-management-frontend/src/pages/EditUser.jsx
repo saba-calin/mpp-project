@@ -84,9 +84,46 @@ const EditUser = () => {
             grade: formattedData.grade
         }
 
+        if (serverStatus === false) {
+            const storedStudents = JSON.parse(localStorage.getItem("updated")) || [];
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const base64Photo = reader.result;
+
+                const newStudent = {
+                    student,
+                    photo: base64Photo  // This is the base64 string
+                };
+
+                storedStudents.push(newStudent);
+                localStorage.setItem("updated", JSON.stringify(storedStudents));
+            };
+
+            if (formattedData.photo.size !== 0) {
+                reader.readAsDataURL(formattedData.photo); // Convert image to base64
+            }
+            else {
+                const newStudent = {
+                    student,
+                    photo: ""
+                };
+                storedStudents.push(newStudent);
+                localStorage.setItem("updated", JSON.stringify(storedStudents));
+            }
+
+            if (formattedData.photo.size !== 0) {
+                setImage(URL.createObjectURL(formattedData.photo));
+            }
+
+            return;
+        }
+
         const formData = new FormData();
         formData.append('student', JSON.stringify(student));
         formData.append('photo', formattedData.photo);
+
+        console.log(formData);
 
         axios.put('http://localhost:8080/api/v1/students', formData, {
             headers: {
@@ -100,17 +137,46 @@ const EditUser = () => {
     }
 
     const handleDownloadImage = () => {
+        if (serverStatus === false) {
+            return;
+        }
+
         const link = document.createElement('a');
         link.href = image;
         link.download = `student_image_${id}.jpg`;
         link.click();
     }
 
+    const syncLocalEdits = async () => {
+        const storedStudents = JSON.parse(localStorage.getItem("updated")) || [];
+
+        for (const entry of storedStudents) {
+            const formData = new FormData();
+            formData.append('student', JSON.stringify(entry.student));
+
+            if (entry.photo) {
+                // Convert base64 back to Blob
+                const res = await fetch(entry.photo);
+                const blob = await res.blob();
+                formData.append('photo', blob, 'image.jpg');
+            }
+
+            await axios.put('http://localhost:8080/api/v1/students', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        }
+
+        localStorage.removeItem("updated");
+    };
+
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
             axios.get("http://localhost:8080/api/health")
                 .then(() => {
+                    syncLocalEdits();
                     setServerStatus(true);
                 })
                 .catch(() => {
