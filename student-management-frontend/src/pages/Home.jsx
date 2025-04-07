@@ -53,7 +53,8 @@ const Home = () => {
 
         await axios.delete(`${serverUrl}/api/v1/students/${id}`);
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students`);
+            const count = scrollCount * 5;
+            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
             setStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -93,6 +94,7 @@ const Home = () => {
         if (deleted === true) {
             fetchStudentsForDisplay();
             fetchStudentsForPieChart();
+            alert("Synced deleted students");
         }
     }
     const syncUpdatedStudents = async () => {
@@ -121,6 +123,7 @@ const Home = () => {
         if (updated === true) {
             fetchStudentsForDisplay();
             fetchStudentsForPieChart();
+            alert("Synced updated students");
         }
     }
     const syncAddedStudents = async () => {
@@ -149,6 +152,7 @@ const Home = () => {
         if (added === true) {
             fetchStudentsForDisplay();
             fetchStudentsForPieChart();
+            alert("Synced added students");
         }
     }
     const syncLocalEdits = async () => {
