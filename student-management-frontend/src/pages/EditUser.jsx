@@ -81,7 +81,7 @@ const EditUser = () => {
             grade: formattedData.grade
         }
 
-        if (serverStatus === false) {
+        if (serverStatus === false || isOnline === false) {
             const updatedStudents = JSON.parse(localStorage.getItem("updated")) || [];
 
             const reader = new FileReader();
@@ -144,28 +144,40 @@ const EditUser = () => {
         link.click();
     }
 
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const handleCheck = () => {
+        setIsOnline(navigator.onLine);
+    }
+    useEffect(() => {
+        console.log(navigator.onLine);
+        window.addEventListener('online', handleCheck);
+        window.addEventListener('offline', handleCheck);
+    }, []);
+
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get(`${serverUrl}/api/health`)
-                .then(() => {
-                    setServerStatus(true);
-                })
-                .catch(() => {
-                    setServerStatus(false);
-                });
+            if (isOnline === true) {
+                axios.get(`${serverUrl}/api/health`)
+                    .then(() => {
+                        setServerStatus(true);
+                    })
+                    .catch(() => {
+                        setServerStatus(false);
+                    });
+            }
         }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [isOnline]);
 
     return (
         <Fragment>
             <AddUserNavbar />
 
             <div className={styles.statusContainer}>
-                <p>Status: {serverStatus ? "Online" : "Offline"}</p>
-                <div className={serverStatus ? styles.onlineStatusCircle : styles.offlineStatusCircle} />
+                <p>Status: {isOnline ? (serverStatus ? "Online" : "Server Down") : "Network Down"}</p>
+                <div className={isOnline ? (serverStatus ? styles.onlineStatusCircle : styles.offlineStatusCircle) : styles.networkStatusCircle} />
             </div>
 
             <div className="container">
