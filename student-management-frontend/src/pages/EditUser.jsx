@@ -1,10 +1,11 @@
 import {Fragment, useEffect, useState} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./EditUser.module.css"
 import Button from "bootstrap/js/src/button.js";
 import {serverUrl} from "../serverUrl.js";
+import EditUserNavbar from "../layout/EditUserNavbar.jsx";
 
 const EditUser = () => {
     const {id} = useParams();
@@ -173,7 +174,7 @@ const EditUser = () => {
 
     return (
         <Fragment>
-            <AddUserNavbar />
+            <EditUserNavbar/>
 
             <div className={styles.statusContainer}>
                 <p>Status: {isOnline ? (serverStatus ? "Online" : "Server Down") : "Network Down"}</p>
@@ -220,6 +221,44 @@ const EditUser = () => {
                 <button className={styles.downloadButton} onClick={handleDownloadImage}>
                     Download Image
                 </button>
+            </div>
+
+            <div className="container">
+                <div className="py-4">
+                    <table className="table border shadow">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Km</th>
+                            <th scope="col">Year</th>
+                            <th scope="col" className="text-center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {/*{(*/}
+                        {/*    (() => {*/}
+                        {/*        return students.map(s => (*/}
+                        {/*            <tr key={s.id}*/}
+                        {/*                className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>*/}
+                        {/*                <th scope="row">{s.id}</th>*/}
+                        {/*                <td>{s.firstName}</td>*/}
+                        {/*                <td>{s.lastName}</td>*/}
+                        {/*                <td>{s.email}</td>*/}
+                        {/*                <td>{s.grade}</td>*/}
+                        {/*                <td className="text-center">*/}
+                        {/*                    <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>*/}
+                        {/*                    <button className="btn btn-danger mx-2"*/}
+                        {/*                            onClick={() => handleDelete(s.id)}>Delete*/}
+                        {/*                    </button>*/}
+                        {/*                </td>*/}
+                        {/*            </tr>*/}
+                        {/*        ));*/}
+                        {/*    })()*/}
+                        {/*)}*/}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </Fragment>
     );
