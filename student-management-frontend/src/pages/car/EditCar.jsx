@@ -48,7 +48,7 @@ const EditCar = () => {
             year: formattedData.year,
             studentId: formattedData.ownerId
         }
-        axios.put(`${serverUrl}/api/v1/cars`, car)
+        axios.put(`${serverUrl}/api/v1/cars?id=${carId}`, car)
             .catch(() => {
                 alert("Owner with the provided id does not exist");
             });

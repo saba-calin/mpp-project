@@ -42,13 +42,14 @@ public class CarController {
     }
 
     @PutMapping
-    public void updateCar(@RequestBody CarRequest carRequest) {
-        Student student = this.studentService.getStudentById(carRequest.getStudentId());
-        this.carService.updateCar(carRequest, student);
+    public void updateCar(
+            @RequestParam("id") int id,
+            @RequestBody CarRequest carRequest) {
+        this.carService.updateCar(id, carRequest);
     }
 
-    @DeleteMapping("{carId}")
-    public void deleteCar(@PathVariable("carId") int carId) {
-        this.carService.deleteCar(carId);
+    @DeleteMapping("{id}")
+    public void deleteCar(@PathVariable("id") int id) {
+        this.carService.deleteCar(id);
     }
 }
