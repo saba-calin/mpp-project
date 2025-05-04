@@ -260,7 +260,7 @@ const EditUser = () => {
                                         <td>{c.km}</td>
                                         <td>{c.year}</td>
                                         <td className="text-center">
-                                            <Link className="btn btn-primary mx-2" to={`/edituser/${c.id}`}>Edit</Link>
+                                            <Link className="btn btn-primary mx-2" to={`/edituser/${id}/editcar/${c.id}`}>Edit</Link>
                                             <button className="btn btn-danger mx-2"
                                                     onClick={() => handleDelete(c.id)}>Delete
                                             </button>

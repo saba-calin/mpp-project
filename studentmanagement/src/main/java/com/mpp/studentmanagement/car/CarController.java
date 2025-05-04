@@ -1,7 +1,6 @@
 package com.mpp.studentmanagement.car;
 
 import com.mpp.studentmanagement.student.Student;
-import com.mpp.studentmanagement.student.StudentRepository;
 import com.mpp.studentmanagement.student.StudentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +24,11 @@ public class CarController {
         return this.carService.getCarsByStudent(student);
     }
 
+    @GetMapping
+    public Car getCarById(@RequestParam("id") int id) {
+        return this.carService.getCarById(id);
+    }
+
     @PostMapping
     public void addCar(@RequestBody CarRequest carRequest) {
         Student student = this.studentService.getStudentById(carRequest.getStudentId());
@@ -35,6 +39,12 @@ public class CarController {
                 .student(student)
                 .build();
         this.carService.addCar(car);
+    }
+
+    @PutMapping
+    public void updateCar(@RequestBody CarRequest carRequest) {
+        Student student = this.studentService.getStudentById(carRequest.getStudentId());
+        this.carService.updateCar(carRequest, student);
     }
 
     @DeleteMapping("{carId}")

@@ -17,8 +17,16 @@ public class CarService {
         this.carRepository.save(car);
     }
 
+    public void updateCar(CarRequest carRequest, Student student) {
+
+    }
+
     public List<Car> getCarsByStudent(Student student) {
         return this.carRepository.findAllByStudent(student);
+    }
+
+    public Car getCarById(int id) {
+        return this.carRepository.findById(id).orElseThrow(() -> new RuntimeException("Car not found"));
     }
 
     public void deleteCar(int carId) {
