@@ -3,10 +3,9 @@ package com.mpp.studentmanagement.car;
 import com.mpp.studentmanagement.student.Student;
 import com.mpp.studentmanagement.student.StudentRepository;
 import com.mpp.studentmanagement.student.StudentService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/cars")
@@ -19,6 +18,13 @@ public class CarController {
         this.studentService = studentService;
     }
 
+    @GetMapping("{studentId}")
+    public List<Car> getCarsByStudentId(@PathVariable("studentId") int studentId) {
+        System.out.println(studentId);
+        Student student = this.studentService.getStudentById(studentId);
+        return this.carService.getCarsByStudent(student);
+    }
+
     @PostMapping
     public void addCar(@RequestBody CarRequest carRequest) {
         Student student = this.studentService.getStudentById(carRequest.getStudentId());
@@ -29,5 +35,10 @@ public class CarController {
                 .student(student)
                 .build();
         this.carService.addCar(car);
+    }
+
+    @DeleteMapping("{carId}")
+    public void deleteCar(@PathVariable("carId") int carId) {
+        this.carService.deleteCar(carId);
     }
 }

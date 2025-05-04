@@ -134,6 +134,16 @@ const EditUser = () => {
         }
     }
 
+    const fetchCars = async () => {
+        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`);
+        setCars(response.data);
+    }
+
+    const [cars, setCars] = useState([]);
+    useEffect(() => {
+        fetchCars();
+    }, []);
+
     const handleDownloadImage = () => {
         if (serverStatus === false) {
             return;
@@ -171,6 +181,11 @@ const EditUser = () => {
 
         return () => clearInterval(interval);
     }, [isOnline]);
+
+    const handleDelete = async (carId) => {
+        await axios.delete(`${serverUrl}/api/v1/cars/${carId}`);
+        fetchCars();
+    }
 
     return (
         <Fragment>
@@ -236,26 +251,24 @@ const EditUser = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {/*{(*/}
-                        {/*    (() => {*/}
-                        {/*        return students.map(s => (*/}
-                        {/*            <tr key={s.id}*/}
-                        {/*                className={s.grade >= 7 ? "table-success" : (s.grade < 5 ? "table-danger" : "table-warning")}>*/}
-                        {/*                <th scope="row">{s.id}</th>*/}
-                        {/*                <td>{s.firstName}</td>*/}
-                        {/*                <td>{s.lastName}</td>*/}
-                        {/*                <td>{s.email}</td>*/}
-                        {/*                <td>{s.grade}</td>*/}
-                        {/*                <td className="text-center">*/}
-                        {/*                    <Link className="btn btn-primary mx-2" to={`/edituser/${s.id}`}>Edit</Link>*/}
-                        {/*                    <button className="btn btn-danger mx-2"*/}
-                        {/*                            onClick={() => handleDelete(s.id)}>Delete*/}
-                        {/*                    </button>*/}
-                        {/*                </td>*/}
-                        {/*            </tr>*/}
-                        {/*        ));*/}
-                        {/*    })()*/}
-                        {/*)}*/}
+                        {(
+                            (() => {
+                                return cars.map(c => (
+                                    <tr key={c.id}>
+                                        <th scope="row">{c.id}</th>
+                                        <td>{c.brand}</td>
+                                        <td>{c.km}</td>
+                                        <td>{c.year}</td>
+                                        <td className="text-center">
+                                            <Link className="btn btn-primary mx-2" to={`/edituser/${c.id}`}>Edit</Link>
+                                            <button className="btn btn-danger mx-2"
+                                                    onClick={() => handleDelete(c.id)}>Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ));
+                            })()
+                        )}
                         </tbody>
                     </table>
                 </div>
