@@ -107,4 +107,8 @@ public class StudentService {
     public List<Student> getTopNStudents(int count) {
         return this.studentRepository.findAll(PageRequest.of(0, count)).getContent();
     }
+
+    public List<StudentCarStatsDto> getStudentCarStats() {
+        return this.studentRepository.getStudentCarStats();
+    }
 }

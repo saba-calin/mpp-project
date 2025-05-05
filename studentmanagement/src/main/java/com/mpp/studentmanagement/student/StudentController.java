@@ -100,4 +100,9 @@ public class StudentController {
             return ResponseEntity.ok("Task is not running");
         }
     }
+
+    @GetMapping("stats")
+    public List<StudentCarStatsDto> getStudentCarStats() {
+        return this.studentService.getStudentCarStats();
+    }
 }

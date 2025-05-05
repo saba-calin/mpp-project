@@ -5,7 +5,10 @@ const HomeNavbar = () => {
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
             <div className="container-fluid">
                 <a className="navbar-brand">Student Management App</a>
-                <Link to={"/adduser"} className="btn btn-outline-light">Add Student</Link>
+                <div>
+                    <Link to={"/stats"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Stats</Link>
+                    <Link to={"/adduser"} className="btn btn-outline-light">Add Student</Link>
+                </div>
             </div>
         </nav>
     );

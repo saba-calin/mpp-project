@@ -9,6 +9,7 @@ import AddUser from "./pages/AddUser.jsx";
 import EditUser from "./pages/EditUser.jsx";
 import AddCar from "./pages/car/AddCar.jsx";
 import EditCar from "./pages/car/EditCar.jsx";
+import Stats from "./pages/stats/Stats.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/adduser" element={<AddUser />} />
+            <Route exact path="/stats" element={<Stats />} />
             <Route exact path="/edituser/:id" element={<EditUser />}></Route>
             <Route exact path="/edituser/:id/addcar" element={<AddCar />}></Route>
             <Route exact path="/edituser/:id/editcar/:carId" element={<EditCar />}></Route>
