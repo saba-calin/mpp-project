@@ -87,6 +87,12 @@
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-stomp</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

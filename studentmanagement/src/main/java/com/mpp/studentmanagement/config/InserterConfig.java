@@ -1,5 +1,7 @@
 package com.mpp.studentmanagement.config;
 
+import com.github.javafaker.Faker;
+import com.mpp.studentmanagement.car.Car;
 import com.mpp.studentmanagement.car.CarRepository;
 import com.mpp.studentmanagement.student.Student;
 import com.mpp.studentmanagement.student.StudentRepository;
@@ -9,12 +11,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Random;
 
 @Configuration
 public class InserterConfig {
     private final int TARGET_STUDENTS = 100_000;
     private final int TARGET_CARS = 100_000;
+
+    private final Faker faker = new Faker();
+    private final Random random = new Random();
+    private final List<String> CAR_BRANDS = List.of(
+            "Toyota", "Ford", "BMW", "Mercedes", "Volkswagen", "Audi",
+            "Honda", "Chevrolet", "Nissan", "Kia", "Hyundai", "Peugeot", "Porsche",
+            "Subaru", "Mazda", "Fiat", "Land Rover", "Jaguar", "Lexus"
+    );
 
     @Autowired
     private StudentRepository studentRepository;
@@ -32,36 +43,23 @@ public class InserterConfig {
                 }
             }
 
+            List<Student> students = this.studentRepository.findAll().stream().limit(100).toList();
             int carCount = this.carRepository.findAll().size();
             if (carCount < this.TARGET_CARS) {
                 int target = this.TARGET_CARS - carCount;
                 for (int i = 0; i < target; i++) {
-
+                    addCar(students);
                 }
             }
         };
     }
 
-    private final String[] firstNames = {
-            "John", "Jane", "Alice", "Bob", "Charlie",
-            "David", "Emma", "Sophia", "Michael", "Lucas",
-            "Olivia", "Ethan", "Amelia", "Daniel", "Grace",
-            "James", "Lily", "Benjamin", "Mia", "William"
-    };
-    private final String[] lastNames = {
-            "Doe", "Smith", "Johnson", "Brown", "Davis",
-            "Miller", "Wilson", "Moore", "Taylor", "Anderson",
-            "Thomas", "Jackson", "White", "Harris", "Martin",
-            "Garcia", "Martinez", "Roberts", "Clark", "Lewis"
-    };
-
     private void addStudent() {
-        Random random = new Random();
-        String firstName = firstNames[random.nextInt(firstNames.length)];
-        String lastName = lastNames[random.nextInt(lastNames.length)];
-        String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@gmail.com";
-        int age = 10 + random.nextInt(91);
-        int grade = 1 + random.nextInt(10);
+        String firstName = this.faker.name().firstName();
+        String lastName = this.faker.name().lastName();
+        String email = this.faker.internet().emailAddress(firstName.toLowerCase() + "." + lastName.toLowerCase());
+        int age = this.faker.number().numberBetween(10, 100);
+        int grade = this.faker.number().numberBetween(1, 10);
         String path = Paths.get("photos").toAbsolutePath().toString() + "/default-photo.jpg";
 
         Student student = Student.builder()
@@ -73,5 +71,20 @@ public class InserterConfig {
                 .path(path)
                 .build();
         this.studentRepository.save(student);
+    }
+
+    private void addCar(List<Student> students) {
+        Student randomStudent = students.get(this.random.nextInt(students.size()));
+        String brand = this.CAR_BRANDS.get(this.random.nextInt(this.CAR_BRANDS.size()));
+        int year = this.faker.number().numberBetween(2000, 2025);
+        int km = this.faker.number().numberBetween(0, 250_000);
+
+        Car car = Car.builder()
+                .brand(brand)
+                .year(year)
+                .km(km)
+                .student(randomStudent)
+                .build();
+        this.carRepository.save(car);
     }
 }

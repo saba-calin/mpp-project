@@ -52,4 +52,9 @@ public class CarController {
     public void deleteCar(@PathVariable("id") int id) {
         this.carService.deleteCar(id);
     }
+
+    @DeleteMapping("drop-table")
+    public void dropTable() {
+        this.carService.dropTable();
+    }
 }

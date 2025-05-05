@@ -61,7 +61,7 @@ const Home = () => {
         fetchStudents();
     }
 
-    const handleDropTable = async () => {
+    const handleDropStudentsTable = async () => {
         await axios.delete(`${serverUrl}/api/v1/students/drop-table`)
         const fetchStudents = async () => {
             const response = await axios.get(`${serverUrl}/api/v1/students`);
@@ -70,7 +70,9 @@ const Home = () => {
         }
         fetchStudents();
     }
-
+    const handleDropCarsTable = async () => {
+        await axios.delete(`${serverUrl}/api/v1/cars/drop-table`);
+    }
 
     const fetchStudentsForPieChart = async () => {
         const response = await axios.get(`${serverUrl}/api/v1/students`);
@@ -394,8 +396,11 @@ const Home = () => {
             </div>
 
             <div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>
-                <button onClick={handleDropTable}>
-                    Drop Table
+                <button onClick={handleDropStudentsTable}>
+                    Drop Students Table
+                </button>
+                <button onClick={handleDropCarsTable}>
+                    Drop Cars Table
                 </button>
             </div>
 

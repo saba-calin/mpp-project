@@ -44,4 +44,8 @@ public class CarService {
     public void deleteCar(int carId) {
         this.carRepository.deleteById(carId);
     }
+
+    public void dropTable() {
+        this.carRepository.deleteAll();
+    }
 }
