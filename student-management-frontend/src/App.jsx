@@ -10,12 +10,16 @@ import EditUser from "./pages/EditUser.jsx";
 import AddCar from "./pages/car/AddCar.jsx";
 import EditCar from "./pages/car/EditCar.jsx";
 import Stats from "./pages/stats/Stats.jsx";
+import Login from "./pages/authentication/Login.jsx";
+import Register from "./pages/authentication/Register.jsx";
 
 function App() {
   return (
     <Router>
         <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
             <Route exact path="/adduser" element={<AddUser />} />
             <Route exact path="/stats" element={<Stats />} />
             <Route exact path="/edituser/:id" element={<EditUser />}></Route>

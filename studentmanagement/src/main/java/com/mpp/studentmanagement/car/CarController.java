@@ -9,8 +9,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/cars")
 public class CarController {
-    CarService carService;
-    StudentService studentService;
+    private final CarService carService;
+    private final StudentService studentService;
 
     public CarController(CarService carService, StudentService studentService) {
         this.carService = carService;
