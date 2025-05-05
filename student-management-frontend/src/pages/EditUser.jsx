@@ -187,6 +187,46 @@ const EditUser = () => {
         fetchCars();
     }
 
+    const [filterValue, setFilterValue] = useState("");
+    const [order, setOrder] = useState("neutral");
+    const fetchAndProcessCars = async(str, sortOrder) => {
+        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`);
+        let newCars = response.data;
+
+        if (str) {
+            newCars = newCars.filter(c => c.brand.toLowerCase().includes(str.toLowerCase()));
+        }
+
+        if (sortOrder === "asc") {
+            newCars.sort((a, b) => a.km - b.km);
+        }
+        else if (sortOrder === "desc") {
+            newCars.sort((a, b) => b.km - a.km);
+        }
+
+        setCars(newCars);
+    }
+
+    const handleFilter = async(str) => {
+        fetchAndProcessCars(str, order);
+    }
+
+    const changeOrder = async () => {
+        let newOrder = "";
+        if (order === "neutral") {
+            newOrder = "asc";
+        }
+        else if (order === "asc") {
+            newOrder = "desc";
+        }
+        else {
+            newOrder = "neutral";
+        }
+
+        setOrder(newOrder);
+        fetchAndProcessCars(filterValue, newOrder);
+    }
+
     return (
         <Fragment>
             <EditUserNavbar/>
@@ -238,6 +278,14 @@ const EditUser = () => {
                 </button>
             </div>
 
+            <div className="text-center" style={{marginTop: "10px"}}>
+                <label htmlFor="filter" style={{marginRight: "10px"}}>Filter By First Brand:</label>
+                <input type="text" name="filter" id="filter" style={{marginRight: "10px"}} onChange={(e) => {
+                    setFilterValue(e.target.value);
+                    handleFilter(e.target.value)
+                }}/>
+            </div>
+
             <div className="container">
                 <div className="py-4">
                     <table className="table border shadow">
@@ -245,7 +293,12 @@ const EditUser = () => {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Brand</th>
-                            <th scope="col">Km</th>
+                            <th scope="col">
+                                Km
+                                <button className="btn border-0" onClick={changeOrder}>
+                                    {order === "neutral" ? "↑↓" : (order === "asc" ? "↑" : "↓")}
+                                </button>
+                            </th>
                             <th scope="col">Year</th>
                             <th scope="col" className="text-center">Action</th>
                         </tr>
