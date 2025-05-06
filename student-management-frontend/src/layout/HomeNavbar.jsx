@@ -14,8 +14,9 @@ const HomeNavbar = () => {
                 <a className="navbar-brand">Student Management App</a>
                 <div>
                     {userRole === "admin"
-                        ? <Link to={"/stats"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Dashboard</Link>
+                        ? <Link to={"/dashboard"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Dashboard</Link>
                         : null}
+                    <Link to={"/login"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Logout</Link>
                     <Link to={"/stats"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Stats</Link>
                     <Link to={"/adduser"} className="btn btn-outline-light">Add Student</Link>
                 </div>

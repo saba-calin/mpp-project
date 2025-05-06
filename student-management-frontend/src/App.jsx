@@ -12,6 +12,7 @@ import EditCar from "./pages/car/EditCar.jsx";
 import Stats from "./pages/stats/Stats.jsx";
 import Login from "./pages/authentication/Login.jsx";
 import Register from "./pages/authentication/Register.jsx";
+import Dashboard from "./pages/dashboard/Dashboard.jsx";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/adduser" element={<AddUser />} />
             <Route exact path="/stats" element={<Stats />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
             <Route exact path="/edituser/:id" element={<EditUser />}></Route>
             <Route exact path="/edituser/:id/addcar" element={<AddCar />}></Route>
             <Route exact path="/edituser/:id/editcar/:carId" element={<EditCar />}></Route>
