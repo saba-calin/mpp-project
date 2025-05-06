@@ -6,7 +6,6 @@ const HomeNavbar = () => {
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         setUserRole(user.userRole);
-        console.log(userRole);
     }, []);
 
     return (

@@ -7,6 +7,19 @@ import {serverUrl} from "../../serverUrl.js";
 const EditCar = () => {
     const {carId} = useParams();
 
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setUser(user);
+    }, []);
+    const buildOperationLog = (operation) => {
+        return {
+            userId: user.id,
+            operation: operation,
+            date: new Date()
+        };
+    }
+
     const [car, setCar] = useState({student: []});
     useEffect(() => {
         const fetchStudent = async () => {
@@ -52,6 +65,7 @@ const EditCar = () => {
             .catch(() => {
                 alert("Owner with the provided id does not exist");
             });
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car"));
     }
 
     return (

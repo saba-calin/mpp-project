@@ -10,6 +10,19 @@ import EditUserNavbar from "../layout/EditUserNavbar.jsx";
 const EditUser = () => {
     const {id} = useParams();
 
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setUser(user);
+    }, []);
+    const buildOperationLog = (operation) => {
+        return {
+            userId: user.id,
+            operation: operation,
+            date: new Date()
+        };
+    }
+
     const [student, setStudent] = useState([]);
     const [image, setImage] = useState([]);
     useEffect(() => {
@@ -21,6 +34,8 @@ const EditUser = () => {
                 `${serverUrl}/api/v1/students/image?path=${response.data.path}`,
                 { responseType: 'blob' }
             );
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"));
+
             const imageURL = URL.createObjectURL(img.data);
             setImage(imageURL);
         }
@@ -128,6 +143,7 @@ const EditUser = () => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students"));
 
         if (formattedData.photo.size !== 0) {
             setImage(URL.createObjectURL(formattedData.photo));
@@ -136,6 +152,7 @@ const EditUser = () => {
 
     const fetchCars = async () => {
         const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`);
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars"));
         setCars(response.data);
     }
 
@@ -184,6 +201,7 @@ const EditUser = () => {
 
     const handleDelete = async (carId) => {
         await axios.delete(`${serverUrl}/api/v1/cars/${carId}`);
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car"));
         fetchCars();
     }
 

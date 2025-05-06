@@ -1,4 +1,4 @@
-import {Fragment, useEffect} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import AddCarNavbar from "../../layout/AddCarNavbar.jsx";
 import axios from "axios";
@@ -6,6 +6,19 @@ import {serverUrl} from "../../serverUrl.js";
 
 const AddCar = () => {
     const {id} = useParams();
+
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setUser(user);
+    }, []);
+    const buildOperationLog = (operation) => {
+        return {
+            userId: user.id,
+            operation: operation,
+            date: new Date()
+        };
+    }
 
     const handleSubmit = (eventObj) => {
         eventObj.preventDefault();
@@ -39,6 +52,7 @@ const AddCar = () => {
             studentId: id
         }
         axios.post(`${serverUrl}/api/v1/cars`, car);
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_car"));
     }
 
     return (

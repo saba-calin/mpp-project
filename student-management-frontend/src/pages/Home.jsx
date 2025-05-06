@@ -1,16 +1,30 @@
 import {Fragment, useEffect, useState} from "react";
 import HomeNavbar from "../layout/HomeNavbar.jsx";
 import {Link} from "react-router-dom";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
+import {ArcElement, Chart as ChartJS, Legend, Tooltip} from "chart.js";
+import {Pie} from "react-chartjs-2";
 import styles from "./Home.module.css";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
 import {serverUrl} from "../serverUrl.js";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setUser(user);
+    }, []);
+    const buildOperationLog = (operation) => {
+        return {
+            userId: user.id,
+            operation: operation,
+            date: new Date()
+        };
+    }
+
     const [allStudents, setAllStudents] = useState([]);
     useEffect(() => {
         const fetchStudents = async () => {
@@ -37,6 +51,7 @@ const Home = () => {
         const fetchStudents = async () => {
             const count = scrollCount * 5;
             const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"));
             setStudents(response.data);
             console.log(response.data);
         }
@@ -52,6 +67,7 @@ const Home = () => {
         }
 
         await axios.delete(`${serverUrl}/api/v1/students/${id}`);
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students"));
         const fetchStudents = async () => {
             const count = scrollCount * 5;
             const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);

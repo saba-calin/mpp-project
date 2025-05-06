@@ -18,6 +18,19 @@ export const getId = () => {
 }
 
 const AddUser = () => {
+    const [user, setUser] = useState([]);
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setUser(user);
+    }, []);
+    const buildOperationLog = (operation) => {
+        return {
+            userId: user.id,
+            operation: operation,
+            date: new Date()
+        };
+    }
+
     const handleSubmit = (eventObj) => {
         eventObj.preventDefault();
 
@@ -110,6 +123,7 @@ const AddUser = () => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students"));
     }
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
