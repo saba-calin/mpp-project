@@ -13,6 +13,8 @@ import Stats from "./pages/stats/Stats.jsx";
 import Login from "./pages/authentication/Login.jsx";
 import Register from "./pages/authentication/Register.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
+import Test from "./pages/test/Test.jsx";
+import Content from "./pages/test/Content.jsx";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/register" element={<Register />} />
+            <Route exact path="/test" element={<Test />} />
+            <Route exact path="/content" element={<Content />} />
             <Route exact path="/adduser" element={<AddUser />} />
             <Route exact path="/stats" element={<Stats />} />
             <Route exact path="/dashboard" element={<Dashboard />} />
