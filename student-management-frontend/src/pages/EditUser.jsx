@@ -27,14 +27,29 @@ const EditUser = () => {
     const [image, setImage] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students/${id}`);
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/students/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setStudent(response.data);
 
             const img = await axios.get(
                 `${serverUrl}/api/v1/students/image?path=${response.data.path}`,
-                { responseType: 'blob' }
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    responseType: 'blob'
+                }
             );
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"));
+            console.log(img);
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"), {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             const imageURL = URL.createObjectURL(img.data);
             setImage(imageURL);
@@ -138,12 +153,18 @@ const EditUser = () => {
 
         console.log(formData);
 
+        const token = localStorage.getItem("token");
         axios.put(`${serverUrl}/api/v1/students`, formData, {
             headers: {
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students"));
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         if (formattedData.photo.size !== 0) {
             setImage(URL.createObjectURL(formattedData.photo));
@@ -151,8 +172,17 @@ const EditUser = () => {
     }
 
     const fetchCars = async () => {
-        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`);
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars"));
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         setCars(response.data);
     }
 
@@ -186,7 +216,12 @@ const EditUser = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (isOnline === true) {
-                axios.get(`${serverUrl}/api/health`)
+                const token = localStorage.getItem("token");
+                axios.get(`${serverUrl}/api/health`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                     .then(() => {
                         setServerStatus(true);
                     })
@@ -200,15 +235,29 @@ const EditUser = () => {
     }, [isOnline]);
 
     const handleDelete = async (carId) => {
-        await axios.delete(`${serverUrl}/api/v1/cars/${carId}`);
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car"));
+        const token = localStorage.getItem("token");
+        await axios.delete(`${serverUrl}/api/v1/cars/${carId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         fetchCars();
     }
 
     const [filterValue, setFilterValue] = useState("");
     const [order, setOrder] = useState("neutral");
     const fetchAndProcessCars = async(str, sortOrder) => {
-        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         let newCars = response.data;
 
         if (str) {

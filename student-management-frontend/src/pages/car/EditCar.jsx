@@ -7,6 +7,11 @@ import {serverUrl} from "../../serverUrl.js";
 const EditCar = () => {
     const {carId} = useParams();
 
+    const [token, setToken] = useState("");
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
     const [user, setUser] = useState([]);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -22,13 +27,21 @@ const EditCar = () => {
 
     const [car, setCar] = useState({student: []});
     useEffect(() => {
+        if (!token) {
+            return;
+        }
+
         const fetchStudent = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/cars?id=${carId}`);
+            const response = await axios.get(`${serverUrl}/api/v1/cars?id=${carId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setCar(response.data);
             console.log(response.data);
         }
         fetchStudent();
-    }, []);
+    }, [token]);
 
     const handleEdit = (eventObj) => {
         eventObj.preventDefault();
@@ -61,11 +74,19 @@ const EditCar = () => {
             year: formattedData.year,
             studentId: formattedData.ownerId
         }
-        axios.put(`${serverUrl}/api/v1/cars?id=${carId}`, car)
+        axios.put(`${serverUrl}/api/v1/cars?id=${carId}`, car, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
             .catch(() => {
                 alert("Owner with the provided id does not exist");
             });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car"));
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 
     return (

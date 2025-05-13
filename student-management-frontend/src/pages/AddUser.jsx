@@ -18,6 +18,11 @@ export const getId = () => {
 }
 
 const AddUser = () => {
+    const [token, setToken] = useState("");
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
     const [user, setUser] = useState([]);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -120,10 +125,15 @@ const AddUser = () => {
 
         axios.post(`${serverUrl}/api/v1/students`, formData, {
             headers: {
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students"));
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -139,9 +149,17 @@ const AddUser = () => {
     const [serverStatus, setServerStatus] = useState(true);
     useEffect(() => {
         const interval = setInterval(() => {
+            if (!token) {
+                return;
+            }
+
             if (isOnline === true) {
                 console.log(isOnline);
-                axios.get(`${serverUrl}/api/health`)
+                axios.get(`${serverUrl}/api/health`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                     .then(() => {
                         setServerStatus(true);
                     })

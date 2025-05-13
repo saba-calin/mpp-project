@@ -28,7 +28,12 @@ const Home = () => {
     const [allStudents, setAllStudents] = useState([]);
     useEffect(() => {
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students`);
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/students`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setAllStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -50,8 +55,17 @@ const Home = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             const count = scrollCount * 5;
-            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"));
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"), {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setStudents(response.data);
             console.log(response.data);
         }
@@ -66,11 +80,24 @@ const Home = () => {
             return;
         }
 
-        await axios.delete(`${serverUrl}/api/v1/students/${id}`);
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students"));
+        const token = localStorage.getItem("token");
+        await axios.delete(`${serverUrl}/api/v1/students/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const fetchStudents = async () => {
             const count = scrollCount * 5;
-            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
+            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setStudents(response.data);
             calculateGradeDistribution(response.data);
         }
@@ -78,34 +105,63 @@ const Home = () => {
     }
 
     const handleDropStudentsTable = async () => {
-        await axios.delete(`${serverUrl}/api/v1/students/drop-table`)
+        const token = localStorage.getItem("token");
+        await axios.delete(`${serverUrl}/api/v1/students/drop-table`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students`);
+            const response = await axios.get(`${serverUrl}/api/v1/students`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setStudents(response.data);
             calculateGradeDistribution(response.data);
         }
         fetchStudents();
     }
     const handleDropCarsTable = async () => {
-        await axios.delete(`${serverUrl}/api/v1/cars/drop-table`);
+        const token = localStorage.getItem("token");
+        await axios.delete(`${serverUrl}/api/v1/cars/drop-table`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 
     const fetchStudentsForPieChart = async () => {
-        const response = await axios.get(`${serverUrl}/api/v1/students`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${serverUrl}/api/v1/students`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         calculateGradeDistribution(response.data);
     }
     const fetchStudentsForDisplay = async () => {
+        const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         setStudents(response.data);
     }
     const syncDeletedStudents = async () => {
+        const token = localStorage.getItem("token");
         const deletedStudents = JSON.parse(localStorage.getItem("deleted")) || [];
         let deleted = false;
 
         for (const entry of deletedStudents) {
             deleted = true;
-            await axios.delete(`${serverUrl}/api/v1/students/${entry}`);
+            await axios.delete(`${serverUrl}/api/v1/students/${entry}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
         }
         localStorage.removeItem("deleted");
 
@@ -116,6 +172,7 @@ const Home = () => {
         }
     }
     const syncUpdatedStudents = async () => {
+        const token = localStorage.getItem("token");
         const updatedStudents = JSON.parse(localStorage.getItem("updated")) || [];
         let updated = false;
 
@@ -132,6 +189,7 @@ const Home = () => {
 
             await axios.put(`${serverUrl}/api/v1/students`, formData, {
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -145,6 +203,7 @@ const Home = () => {
         }
     }
     const syncAddedStudents = async () => {
+        const token = localStorage.getItem("token");
         const addedStudents = JSON.parse(localStorage.getItem("added")) || [];
         let added = false;
 
@@ -161,6 +220,7 @@ const Home = () => {
 
             await axios.post(`${serverUrl}/api/v1/students`, formData, {
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -191,7 +251,12 @@ const Home = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (isOnline === true) {
-                axios.get(`${serverUrl}/api/health`)
+                const token = localStorage.getItem("token");
+                axios.get(`${serverUrl}/api/health`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                     .then(() => {
                         syncLocalEdits();
                         setServerStatus(true);
@@ -207,8 +272,13 @@ const Home = () => {
 
     const [filterValue, setFilterValue] = useState("");
     const handleFilter = async(str) => {
+        const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         if (str === "") {
             const newStudents = response.data;
 
@@ -238,8 +308,13 @@ const Home = () => {
 
     const [order, setOrder] = useState("neutral");
     const changeOrder = async () => {
+        const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`);
+        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         setOrder((prevOrder) => {
             let newOrder = prevOrder;
             let sortedStudents = response.data;
@@ -287,20 +362,30 @@ const Home = () => {
         setGradeDistribution(distribution);
     };
 
-    useEffect(() => {
-        const socket = new SockJS(`${serverUrl}/ws`);
-        const stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, () => {
-            stompClient.subscribe("/topic/gradeDistribution", () => {
-                const fetchStudents = async () => {
-                    const response = await axios.get(`${serverUrl}/api/v1/students`);
-                    calculateGradeDistribution(response.data);
-                }
-                fetchStudents();
-            });
-        });
-    }, []);
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     const socket = new SockJS(`${serverUrl}/ws`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     });
+    //     const stompClient = Stomp.over(socket);
+    //
+    //     stompClient.connect({}, () => {
+    //         stompClient.subscribe("/topic/gradeDistribution", () => {
+    //             const fetchStudents = async () => {
+    //                 const token = localStorage.getItem("token");
+    //                 const response = await axios.get(`${serverUrl}/api/v1/students`, {
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`
+    //                     }
+    //                 });
+    //                 calculateGradeDistribution(response.data);
+    //             }
+    //             fetchStudents();
+    //         });
+    //     });
+    // }, []);
 
     const pieData = {
         labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
@@ -316,7 +401,12 @@ const Home = () => {
 
     const [isTaskRunning, setIsTaskRunning] = useState(false);
     const handleTaskButton = async () => {
-        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`);
+        const token = localStorage.getItem("token");
+        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         if (response.data === "Task started") {
             setIsTaskRunning(true);
         }
@@ -326,7 +416,12 @@ const Home = () => {
     }
     useEffect(() => {
         const getTaskStatus = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students/getTaskStatus`);
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/students/getTaskStatus`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             if (response.data === "Task is running") {
                 setIsTaskRunning(true);
             }
@@ -405,11 +500,11 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
-                <button onClick={handleTaskButton}>
-                    {isTaskRunning ? "Stop Generation" : "Start Generation"}
-                </button>
-            </div>
+            {/*<div className={`${styles.paginationButtons} ${styles.generateButton}`}>*/}
+            {/*    <button onClick={handleTaskButton}>*/}
+            {/*        {isTaskRunning ? "Stop Generation" : "Start Generation"}*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
             <div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>
                 <button onClick={handleDropStudentsTable}>

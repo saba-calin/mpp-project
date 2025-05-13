@@ -13,13 +13,18 @@ const Register = () => {
         const formattedData = Object.fromEntries(formData.entries());
         console.log(formattedData);
 
-        if (formattedData.username === "") {
-            alert("The 'Username' field cannot be empty");
+        if (formattedData.firstName === "") {
+            alert("The 'First Name' field cannot be empty");
             return;
         }
 
-        if (formattedData.email === "") {
-            alert("The 'Email' field cannot be negative");
+        if (formattedData.lastName === "") {
+            alert("The 'Last Name' field cannot be empty");
+            return;
+        }
+
+        if (formattedData.username === "") {
+            alert("The 'Username' field cannot be empty");
             return;
         }
 
@@ -29,14 +34,23 @@ const Register = () => {
         }
 
         const user = {
+            firstName: formattedData.firstName,
+            lastName: formattedData.lastName,
             username: formattedData.username,
-            userRole: formattedData.role,
-            email: formattedData.email,
-            password: formattedData.password
+            password: formattedData.password,
+            role: formattedData.role
         }
-        axios.post(`${serverUrl}/api/v1/user/register`, user)
-            .then(() => navigate("/login"))
-            .catch(() => alert("User with the provided username already exists"));
+        axios.post(`${serverUrl}/api/v1/auth/register`, user)
+            .then((response) => {
+                const token = response.data.token;
+                localStorage.setItem("token", token);
+                console.log(token);
+
+                navigate("/");
+            })
+            .catch(() => {
+                alert("User already exists");
+            });
     }
 
     return (
@@ -50,20 +64,23 @@ const Register = () => {
                             Register
                         </h2>
                         <form role="form" className="mb-3 text-center" onSubmit={handleEdit}>
+                            <label htmlFor="firstName" className="form-label">First Name</label>
+                            <input type="text" id="firstName" name="firstName" className="form-control" placeholder="First Name" style={{marginBottom: "10px"}} />
+
+                            <label htmlFor="lastName" className="form-label">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" className="form-control" placeholder="Last Name" style={{marginBottom: "10px"}} />
+
                             <label htmlFor="username" className="form-label">Username</label>
                             <input type="text" id="username" name="username" className="form-control" placeholder="Username" style={{marginBottom: "10px"}} />
 
-                            <label htmlFor="role" className="form-label">Role</label>
-                            <select id="role" name="role" className="form-control" style={{marginBottom: "10px"}}>
-                                <option value="user">user</option>
-                                <option value="admin">admin</option>
-                            </select>
-
-                            <label htmlFor="email" className="form-label">Email</label>
-                            <input type="email" id="email" name="email" className="form-control" placeholder="Email" style={{marginBottom: "10px"}} />
-
                             <label htmlFor="password" className="form-label">Password</label>
-                            <input type="password" id="password" name="password" className="form-control" placeholder="Password" style={{marginBottom: "50px"}} />
+                            <input type="password" id="password" name="password" className="form-control" placeholder="Password" style={{marginBottom: "10px"}} />
+
+                            <label htmlFor="role" className="form-label">Role</label>
+                            <select id="role" name="role" className="form-control" style={{marginBottom: "50px"}}>
+                                <option value="USER">USER</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
 
                             <button type="submit" className="btn btn-outline-primary">Register</button>
                         </form>

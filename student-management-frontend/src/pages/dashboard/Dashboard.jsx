@@ -8,7 +8,12 @@ const Dashboard = () => {
     const [users, setUsers] = useState([]);
     useEffect(() => {
         const fetchUsers = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/user/suspicious`);
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/user/suspicious`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setUsers(response.data);
             console.log(response.data);
         }

@@ -1,11 +1,21 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
+import axios from "axios";
+import {serverUrl} from "../serverUrl.js";
 
 const HomeNavbar = () => {
-    const [userRole, setUserRole] = useState("user");
+    const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        setUserRole(user.userRole);
+        const checkIfAdmin = async () => {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${serverUrl}/api/v1/auth/is-admin`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setIsAdmin(response.data);
+        }
+        checkIfAdmin();
     }, []);
 
     return (
@@ -13,7 +23,7 @@ const HomeNavbar = () => {
             <div className="container-fluid">
                 <a className="navbar-brand">Student Management App</a>
                 <div>
-                    {userRole === "admin"
+                    {isAdmin
                         ? <Link to={"/dashboard"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Dashboard</Link>
                         : null}
                     <Link to={"/login"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Logout</Link>

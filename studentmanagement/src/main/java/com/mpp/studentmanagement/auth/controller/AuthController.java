@@ -6,10 +6,7 @@ import com.mpp.studentmanagement.auth.service.AuthService;
 import com.mpp.studentmanagement.exception.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -26,5 +23,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody User request) throws UserAlreadyExistsException {
         return ResponseEntity.ok(this.authService.register(request));
+    }
+
+    @GetMapping("is-admin")
+    public ResponseEntity<Boolean> isAdmin() {
+        return ResponseEntity.ok(true);
     }
 }

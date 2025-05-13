@@ -7,6 +7,11 @@ import {serverUrl} from "../../serverUrl.js";
 const AddCar = () => {
     const {id} = useParams();
 
+    const [token, setToken] = useState("");
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
     const [user, setUser] = useState([]);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -51,8 +56,16 @@ const AddCar = () => {
             year: formattedData.year,
             studentId: id
         }
-        axios.post(`${serverUrl}/api/v1/cars`, car);
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_car"));
+        axios.post(`${serverUrl}/api/v1/cars`, car, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_car"), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 
     return (

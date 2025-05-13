@@ -5,15 +5,28 @@ import {serverUrl} from "../../serverUrl.js";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
+    const [token, setToken] = useState("");
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
     const [students, setStudents] = useState([]);
     useEffect(() => {
+        if (!token) {
+            return;
+        }
+
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students/stats`);
+            const response = await axios.get(`${serverUrl}/api/v1/students/stats`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setStudents(response.data);
             console.log(response.data);
         }
         fetchStudents();
-    }, []);
+    }, [token]);
 
     return (
         <Fragment>

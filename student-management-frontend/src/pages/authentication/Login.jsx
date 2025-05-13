@@ -16,10 +16,12 @@ const Login = () => {
             username: formattedData.username,
             password: formattedData.password
         };
-        axios.post(`${serverUrl}/api/v1/user/login`, userRequest)
+        axios.post(`${serverUrl}/api/v1/auth/login`, userRequest)
             .then((response) => {
-                const user = response.data;
-                localStorage.setItem("user", JSON.stringify(user));
+                const token = response.data.token;
+                localStorage.setItem("token", token);
+                console.log(token);
+
                 navigate("/");
             })
             .catch(() => alert("Invalid credentials"));
