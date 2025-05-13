@@ -18,10 +18,10 @@ public class OperationMonitorService {
         this.operationLogRepository = operationLogRepository;
     }
 
-    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
-    public void checkForSuspiciousUsers() {
-        this.suspiciousUsersIds = this.operationLogRepository.findSuspiciousUsersIds(LocalDate.now());
-    }
+//    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
+//    public void checkForSuspiciousUsers() {
+//        this.suspiciousUsersIds = this.operationLogRepository.findSuspiciousUsersIds(LocalDate.now());
+//    }
 
     public List<Integer> getSuspiciousUsersIds() {
         return this.suspiciousUsersIds;
