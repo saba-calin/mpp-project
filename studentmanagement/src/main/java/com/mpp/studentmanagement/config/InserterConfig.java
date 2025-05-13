@@ -16,8 +16,8 @@ import java.util.Random;
 
 @Configuration
 public class InserterConfig {
-    private final int TARGET_STUDENTS = 100_000;
-    private final int TARGET_CARS = 100_000;
+    private final int TARGET_STUDENTS = 500;
+    private final int TARGET_CARS = 500;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
@@ -59,7 +59,7 @@ public class InserterConfig {
         String lastName = this.faker.name().lastName();
         String email = this.faker.internet().emailAddress(firstName.toLowerCase() + "." + lastName.toLowerCase());
         int age = this.faker.number().numberBetween(10, 100);
-        int grade = this.faker.number().numberBetween(1, 10);
+        int grade = this.faker.number().numberBetween(1, 11);
         String path = Paths.get("photos").toAbsolutePath().toString() + "/default-photo.jpg";
 
         Student student = Student.builder()

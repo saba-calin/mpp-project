@@ -15,9 +15,9 @@ const EditUser = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setUser(user);
     }, []);
-    const buildOperationLog = (operation) => {
+    const buildOperationLog = (operation, token) => {
         return {
-            userId: user.id,
+            token: token,
             operation: operation,
             date: new Date()
         };
@@ -45,7 +45,7 @@ const EditUser = () => {
                 }
             );
             console.log(img);
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"), {
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students", token), {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -160,7 +160,7 @@ const EditUser = () => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students"), {
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -178,7 +178,7 @@ const EditUser = () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars"), {
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -241,7 +241,7 @@ const EditUser = () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car"), {
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }

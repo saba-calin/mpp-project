@@ -28,9 +28,9 @@ const AddUser = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setUser(user);
     }, []);
-    const buildOperationLog = (operation) => {
+    const buildOperationLog = (operation, token) => {
         return {
-            userId: user.id,
+            token: token,
             operation: operation,
             date: new Date()
         };
@@ -129,7 +129,7 @@ const AddUser = () => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students"), {
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -154,7 +154,6 @@ const AddUser = () => {
             }
 
             if (isOnline === true) {
-                console.log(isOnline);
                 axios.get(`${serverUrl}/api/health`, {
                     headers: {
                         Authorization: `Bearer ${token}`

@@ -17,9 +17,9 @@ const EditCar = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setUser(user);
     }, []);
-    const buildOperationLog = (operation) => {
+    const buildOperationLog = (operation, token) => {
         return {
-            userId: user.id,
+            token: token,
             operation: operation,
             date: new Date()
         };
@@ -82,7 +82,7 @@ const EditCar = () => {
             .catch(() => {
                 alert("Owner with the provided id does not exist");
             });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car"), {
+        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }

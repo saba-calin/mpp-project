@@ -252,18 +252,18 @@ const Home = () => {
         const interval = setInterval(() => {
             if (isOnline === true) {
                 const token = localStorage.getItem("token");
-                // axios.get(`${serverUrl}/api/health`, {
-                //     headers: {
-                //         Authorization: `Bearer ${token}`
-                //     }
-                // })
-                // .then(() => {
-                //     syncLocalEdits();
-                //     setServerStatus(true);
-                // })
-                // .catch(() => {
-                //     setServerStatus(false);
-                // });
+                axios.get(`${serverUrl}/api/health`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                .then(() => {
+                    syncLocalEdits();
+                    setServerStatus(true);
+                })
+                .catch(() => {
+                    setServerStatus(false);
+                });
             }
         }, 1000);
 
