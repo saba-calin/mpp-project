@@ -1,6 +1,7 @@
 package com.mpp.studentmanagement.auth.service;
 
 import com.mpp.studentmanagement.auth.model.AuthResponse;
+import com.mpp.studentmanagement.auth.model.TokenRequest;
 import com.mpp.studentmanagement.auth.model.User;
 import com.mpp.studentmanagement.auth.repository.UserRepository;
 import com.mpp.studentmanagement.exception.UserAlreadyExistsException;
@@ -44,9 +45,19 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        User existingUser = this.userRepository.findUserByUsername(request.getUsername()).orElseThrow(() ->
+        User user = this.userRepository.findUserByUsername(request.getUsername()).orElseThrow(() ->
                 new UsernameNotFoundException("User with username " + request.getUsername() + " not found"));
-        String token = this.jwtService.generateToken(request);
+        String token = this.jwtService.generateToken(user);
         return new AuthResponse(token);
+    }
+
+    public Boolean isAdmin(TokenRequest tokenRequest) {
+        String username = this.jwtService.extractUsername(tokenRequest.getToken());
+        Optional<User> user = this.userRepository.findUserByUsername(username);
+
+        if (user.isPresent() && user.get().getRole().toString().equals("ADMIN")) {
+            return true;
+        }
+        return false;
     }
 }

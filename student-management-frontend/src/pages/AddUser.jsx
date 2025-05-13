@@ -160,12 +160,12 @@ const AddUser = () => {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                    .then(() => {
-                        setServerStatus(true);
-                    })
-                    .catch(() => {
-                        setServerStatus(false);
-                    });
+                .then(() => {
+                    setServerStatus(true);
+                })
+                .catch(() => {
+                    setServerStatus(false);
+                });
             }
         }, 1000);
 

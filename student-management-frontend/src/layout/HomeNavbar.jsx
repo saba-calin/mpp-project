@@ -8,11 +8,15 @@ const HomeNavbar = () => {
     useEffect(() => {
         const checkIfAdmin = async () => {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/auth/is-admin`, {
+            const data = {
+                token: token
+            }
+            const response = await axios.post(`${serverUrl}/api/v1/auth/is-admin`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+            console.log("resp " + response.data);
             setIsAdmin(response.data);
         }
         checkIfAdmin();

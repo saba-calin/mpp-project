@@ -1,6 +1,7 @@
 package com.mpp.studentmanagement.auth.controller;
 
 import com.mpp.studentmanagement.auth.model.AuthResponse;
+import com.mpp.studentmanagement.auth.model.TokenRequest;
 import com.mpp.studentmanagement.auth.model.User;
 import com.mpp.studentmanagement.auth.service.AuthService;
 import com.mpp.studentmanagement.exception.UserAlreadyExistsException;
@@ -25,8 +26,8 @@ public class AuthController {
         return ResponseEntity.ok(this.authService.register(request));
     }
 
-    @GetMapping("is-admin")
-    public ResponseEntity<Boolean> isAdmin() {
-        return ResponseEntity.ok(true);
+    @PostMapping("is-admin")
+    public ResponseEntity<Boolean> isAdmin(@RequestBody TokenRequest tokenRequest) {
+        return ResponseEntity.ok(this.authService.isAdmin(tokenRequest));
     }
 }

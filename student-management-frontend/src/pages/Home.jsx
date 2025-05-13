@@ -17,9 +17,9 @@ const Home = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         setUser(user);
     }, []);
-    const buildOperationLog = (operation) => {
+    const buildOperationLog = (operation, token) => {
         return {
-            userId: user.id,
+            token: token,
             operation: operation,
             date: new Date()
         };
@@ -61,7 +61,7 @@ const Home = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students"), {
+            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students", token), {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -86,7 +86,7 @@ const Home = () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students"), {
+        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -252,18 +252,18 @@ const Home = () => {
         const interval = setInterval(() => {
             if (isOnline === true) {
                 const token = localStorage.getItem("token");
-                axios.get(`${serverUrl}/api/health`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                    .then(() => {
-                        syncLocalEdits();
-                        setServerStatus(true);
-                    })
-                    .catch(() => {
-                        setServerStatus(false);
-                    });
+                // axios.get(`${serverUrl}/api/health`, {
+                //     headers: {
+                //         Authorization: `Bearer ${token}`
+                //     }
+                // })
+                // .then(() => {
+                //     syncLocalEdits();
+                //     setServerStatus(true);
+                // })
+                // .catch(() => {
+                //     setServerStatus(false);
+                // });
             }
         }, 1000);
 

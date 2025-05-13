@@ -12,7 +12,7 @@ public class OperationLogController {
     }
 
     @PostMapping
-    public void addOperation(@RequestBody OperationLog operationLog) {
-        this.operationLogService.addOperation(operationLog);
+    public void addOperation(@RequestBody OperationLogRequest request) {
+        this.operationLogService.addOperation(request);
     }
 }
