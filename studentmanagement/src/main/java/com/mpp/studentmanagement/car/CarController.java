@@ -20,8 +20,7 @@ public class CarController {
     @GetMapping("{studentId}")
     public List<Car> getCarsByStudentId(@PathVariable("studentId") int studentId) {
         System.out.println(studentId);
-        Student student = this.studentService.getStudentById(studentId);
-        return this.carService.getCarsByStudent(student);
+        return this.carService.getCarsByStudentId(studentId);
     }
 
     @GetMapping

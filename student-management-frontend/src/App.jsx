@@ -31,6 +31,8 @@ function App() {
             <Route exact path="/edituser/:id" element={<EditUser />}></Route>
             <Route exact path="/edituser/:id/addcar" element={<AddCar />}></Route>
             <Route exact path="/edituser/:id/editcar/:carId" element={<EditCar />}></Route>
+
+            <Route exact path="*" element={<Login />} />
         </Routes>
     </Router>
   )

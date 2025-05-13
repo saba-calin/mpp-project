@@ -33,8 +33,8 @@ public class CarService {
         car.setStudent(student);
     }
 
-    public List<Car> getCarsByStudent(Student student) {
-        return this.carRepository.findAllByStudent(student);
+    public List<Car> getCarsByStudentId(int id) {
+        return this.carRepository.findAllByStudentId(id);
     }
 
     public Car getCarById(int id) {
