@@ -7,7 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String token;
-    private String qrCodeUrl;
+public class AuthRequest {
+    private String username;
+    private String password;
+    private int verificationCode;
 }

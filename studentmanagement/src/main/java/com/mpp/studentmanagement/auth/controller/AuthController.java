@@ -1,8 +1,6 @@
 package com.mpp.studentmanagement.auth.controller;
 
-import com.mpp.studentmanagement.auth.model.AuthResponse;
-import com.mpp.studentmanagement.auth.model.TokenRequest;
-import com.mpp.studentmanagement.auth.model.User;
+import com.mpp.studentmanagement.auth.model.*;
 import com.mpp.studentmanagement.auth.service.AuthService;
 import com.mpp.studentmanagement.exception.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
@@ -17,13 +15,18 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody User request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         return ResponseEntity.ok(this.authService.authenticate(request));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody User request) throws UserAlreadyExistsException {
-        return ResponseEntity.ok(this.authService.register(request));
+    @PostMapping("/register/init")
+    public ResponseEntity<AuthResponse> initRegister(@RequestBody User request) throws UserAlreadyExistsException {
+        return ResponseEntity.ok(this.authService.initRegister(request));
+    }
+
+    @PostMapping("/register/confirm")
+    public ResponseEntity<AuthResponse> confirmRegister(@RequestBody RegisterConfirmRequest request) {
+        return ResponseEntity.ok(this.authService.confirmRegister(request));
     }
 
     @PostMapping("is-admin")

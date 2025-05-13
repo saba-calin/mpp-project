@@ -12,11 +12,13 @@ const Login = () => {
         const formData = new FormData(e.target);
         const formattedData = Object.fromEntries(formData.entries());
 
-        const userRequest = {
+        const authRequest = {
             username: formattedData.username,
-            password: formattedData.password
+            password: formattedData.password,
+            verificationCode: formattedData.code
         };
-        axios.post(`${serverUrl}/api/v1/auth/login`, userRequest)
+        console.log(authRequest);
+        axios.post(`${serverUrl}/api/v1/auth/login`, authRequest)
             .then((response) => {
                 const token = response.data.token;
                 localStorage.setItem("token", token);
@@ -42,7 +44,10 @@ const Login = () => {
                             <input type="text" id="username" name="username" className="form-control" placeholder="Username" style={{marginBottom: "10px"}} />
 
                             <label htmlFor="password" className="form-label">Password</label>
-                            <input type="password" id="password" name="password" className="form-control" placeholder="Password" style={{marginBottom: "50px"}} />
+                            <input type="password" id="password" name="password" className="form-control" placeholder="Password" style={{marginBottom: "10px"}} />
+
+                            <label htmlFor="code" className="form-label">2FA Code</label>
+                            <input type="number" id="code" name="code" className="form-control" placeholder="2FA Code" style={{marginBottom: "50px"}} />
 
                             <button type="submit" className="btn btn-outline-primary">Log In</button>
                         </form>

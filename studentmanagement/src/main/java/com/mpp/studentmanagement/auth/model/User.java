@@ -39,6 +39,8 @@ public class User implements UserDetails {
     @Column(name = "role")
     private Role role;
 
+    @Column(name = "two_fa_secret")
+    private String twoFaSecret;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

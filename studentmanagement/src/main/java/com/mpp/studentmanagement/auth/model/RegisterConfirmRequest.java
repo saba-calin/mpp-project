@@ -2,12 +2,12 @@ package com.mpp.studentmanagement.auth.model;
 
 import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String token;
-    private String qrCodeUrl;
+public class RegisterConfirmRequest {
+    private String username;
+    private int verificationCode;
 }
