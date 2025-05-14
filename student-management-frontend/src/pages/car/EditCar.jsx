@@ -1,10 +1,30 @@
 import {Fragment, useEffect, useState} from "react";
 import AddCarNavbar from "../../layout/AddCarNavbar.jsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {serverUrl} from "../../serverUrl.js";
 
 const EditCar = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+
+        const data = {
+            token: token
+        }
+        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .catch((error) => {
+                navigate("/login");
+            });
+    }, []);
+
     const {carId} = useParams();
 
     const [token, setToken] = useState("");

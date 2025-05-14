@@ -4,6 +4,7 @@ import {useLocalStorage} from "../useLocalStorage.js";
 import axios from "axios";
 import styles from "./AddUser.module.css";
 import {serverUrl} from "../serverUrl.js";
+import {useNavigate} from "react-router-dom";
 
 export const getId = () => {
     const students = JSON.parse(localStorage.getItem('students')) ?? [];
@@ -18,6 +19,26 @@ export const getId = () => {
 }
 
 const AddUser = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+
+        const data = {
+            token: token
+        }
+        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .catch((error) => {
+                navigate("/login");
+            });
+    }, []);
+
     const [token, setToken] = useState("");
     useEffect(() => {
         setToken(localStorage.getItem("token"));

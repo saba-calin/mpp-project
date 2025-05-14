@@ -90,4 +90,14 @@ public class AuthService {
         }
         return false;
     }
+
+    public Boolean isUser(TokenRequest tokenRequest) {
+        String username = this.jwtService.extractUsername(tokenRequest.getToken());
+        Optional<User> user = this.userRepository.findUserByUsername(username);
+
+        if (user.isPresent() && user.get().getRole().toString().equals("USER")) {
+            return true;
+        }
+        return false;
+    }
 }

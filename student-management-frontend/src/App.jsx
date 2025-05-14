@@ -23,8 +23,8 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/register" element={<Register />} />
-            <Route exact path="/test" element={<Test />} />
-            <Route exact path="/content" element={<Content />} />
+            {/*<Route exact path="/test" element={<Test />} />*/}
+            {/*<Route exact path="/content" element={<Content />} />*/}
             <Route exact path="/adduser" element={<AddUser />} />
             <Route exact path="/stats" element={<Stats />} />
             <Route exact path="/dashboard" element={<Dashboard />} />

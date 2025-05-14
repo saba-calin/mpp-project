@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
 import HomeNavbar from "../layout/HomeNavbar.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from "chart.js";
 import {Pie} from "react-chartjs-2";
 import styles from "./Home.module.css";
@@ -12,6 +12,26 @@ import {serverUrl} from "../serverUrl.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+
+        const data = {
+            token: token
+        }
+        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .catch((error) => {
+            navigate("/login");
+        });
+    }, []);
+
     const [user, setUser] = useState([]);
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));

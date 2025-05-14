@@ -33,4 +33,9 @@ public class AuthController {
     public ResponseEntity<Boolean> isAdmin(@RequestBody TokenRequest tokenRequest) {
         return ResponseEntity.ok(this.authService.isAdmin(tokenRequest));
     }
+
+    @PostMapping("is-user")
+    public ResponseEntity<Boolean> isUser(@RequestBody TokenRequest tokenRequest) {
+        return ResponseEntity.ok(this.authService.isUser(tokenRequest));
+    }
 }

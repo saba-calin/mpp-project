@@ -3,8 +3,29 @@ import AddUserNavbar from "../../layout/AddUserNavbar.jsx";
 import axios from "axios";
 import {serverUrl} from "../../serverUrl.js";
 import styles from "./Dashboard.module.css"
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+
+        const data = {
+            token: token
+        }
+        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .catch((error) => {
+                navigate("/login");
+            });
+    }, []);
+
     const [users, setUsers] = useState([]);
     useEffect(() => {
         const fetchUsers = async () => {

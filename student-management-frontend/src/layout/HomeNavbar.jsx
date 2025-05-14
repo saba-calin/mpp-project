@@ -1,9 +1,11 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {serverUrl} from "../serverUrl.js";
 
 const HomeNavbar = () => {
+    const navigate = useNavigate();
+
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
         const checkIfAdmin = async () => {
@@ -22,6 +24,11 @@ const HomeNavbar = () => {
         checkIfAdmin();
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+    }
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
             <div className="container-fluid">
@@ -30,7 +37,7 @@ const HomeNavbar = () => {
                     {isAdmin
                         ? <Link to={"/dashboard"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Dashboard</Link>
                         : null}
-                    <Link to={"/login"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Logout</Link>
+                    <button onClick={handleLogout} className="btn btn-outline-light" style={{marginRight: "10px"}}>Logout</button>
                     <Link to={"/stats"} className="btn btn-outline-light" style={{marginRight: "10px"}}>Stats</Link>
                     <Link to={"/adduser"} className="btn btn-outline-light">Add Student</Link>
                 </div>

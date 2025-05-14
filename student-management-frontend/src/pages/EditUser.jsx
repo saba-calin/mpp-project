@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
 import AddUserNavbar from "../layout/AddUserNavbar.jsx";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./EditUser.module.css"
 import Button from "bootstrap/js/src/button.js";
@@ -9,6 +9,26 @@ import EditUserNavbar from "../layout/EditUserNavbar.jsx";
 
 const EditUser = () => {
     const {id} = useParams();
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+
+        const data = {
+            token: token
+        }
+        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .catch((error) => {
+                navigate("/login");
+            });
+    }, []);
 
     const [user, setUser] = useState([]);
     useEffect(() => {
