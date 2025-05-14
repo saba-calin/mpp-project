@@ -382,30 +382,30 @@ const Home = () => {
         setGradeDistribution(distribution);
     };
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem("token");
-    //     const socket = new SockJS(`${serverUrl}/ws`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     });
-    //     const stompClient = Stomp.over(socket);
-    //
-    //     stompClient.connect({}, () => {
-    //         stompClient.subscribe("/topic/gradeDistribution", () => {
-    //             const fetchStudents = async () => {
-    //                 const token = localStorage.getItem("token");
-    //                 const response = await axios.get(`${serverUrl}/api/v1/students`, {
-    //                     headers: {
-    //                         Authorization: `Bearer ${token}`
-    //                     }
-    //                 });
-    //                 calculateGradeDistribution(response.data);
-    //             }
-    //             fetchStudents();
-    //         });
-    //     });
-    // }, []);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const socket = new SockJS(`${serverUrl}/ws`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, () => {
+            stompClient.subscribe("/topic/gradeDistribution", () => {
+                const fetchStudents = async () => {
+                    const token = localStorage.getItem("token");
+                    const response = await axios.get(`${serverUrl}/api/v1/students`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    calculateGradeDistribution(response.data);
+                }
+                fetchStudents();
+            });
+        });
+    }, []);
 
     const pieData = {
         labels: ['Low (Below 5)', 'Average (5-6)', 'High (7 and above)'],
@@ -422,7 +422,7 @@ const Home = () => {
     const [isTaskRunning, setIsTaskRunning] = useState(false);
     const handleTaskButton = async () => {
         const token = localStorage.getItem("token");
-        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`, {
+        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -520,11 +520,11 @@ const Home = () => {
                 </div>
             </div>
 
-            {/*<div className={`${styles.paginationButtons} ${styles.generateButton}`}>*/}
-            {/*    <button onClick={handleTaskButton}>*/}
-            {/*        {isTaskRunning ? "Stop Generation" : "Start Generation"}*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+            <div className={`${styles.paginationButtons} ${styles.generateButton}`}>
+                <button onClick={handleTaskButton}>
+                    {isTaskRunning ? "Stop Generation" : "Start Generation"}
+                </button>
+            </div>
 
             <div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>
                 <button onClick={handleDropStudentsTable}>
