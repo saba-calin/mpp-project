@@ -249,7 +249,7 @@ const EditUser = () => {
                         setServerStatus(false);
                     });
             }
-        }, 1000);
+        }, 1000000);
 
         return () => clearInterval(interval);
     }, [isOnline]);

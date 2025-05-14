@@ -18,7 +18,7 @@ public class OperationMonitorService {
         this.operationLogRepository = operationLogRepository;
     }
 
-    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void checkForSuspiciousUsers() {
         this.suspiciousUsersIds = this.operationLogRepository.findSuspiciousUsersIds(LocalDate.now());
     }
