@@ -384,11 +384,7 @@ const Home = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const socket = new SockJS(`${serverUrl}/ws`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const socket = new SockJS(`${serverUrl}/ws`);
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, () => {
@@ -526,14 +522,14 @@ const Home = () => {
                 </button>
             </div>
 
-            <div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>
-                <button onClick={handleDropStudentsTable}>
-                    Drop Students Table
-                </button>
-                <button onClick={handleDropCarsTable}>
-                    Drop Cars Table
-                </button>
-            </div>
+            {/*<div className={`${styles.paginationButtons} ${styles.dropTableButton}`}>*/}
+            {/*    <button onClick={handleDropStudentsTable}>*/}
+            {/*        Drop Students Table*/}
+            {/*    </button>*/}
+            {/*    <button onClick={handleDropCarsTable}>*/}
+            {/*        Drop Cars Table*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
         </Fragment>
     );
