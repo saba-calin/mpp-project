@@ -19,6 +19,6 @@ jobs:
           script: |
             cd ${{ secrets.APP_DIR }}
             git pull origin master
-            mvn -f backend/pom.xml package -DskipTests
+            mvn -f studentmanagement/pom.xml package -DskipTests
             docker-compose down
             docker-compose up --build -d
