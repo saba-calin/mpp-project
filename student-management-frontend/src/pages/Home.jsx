@@ -119,7 +119,13 @@ const Home = () => {
                 }
             });
             setStudents(response.data);
-            calculateGradeDistribution(response.data);
+
+            const anotherResponse = await axios.get(`${serverUrl}/api/v1/students`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            calculateGradeDistribution(anotherResponse.data);
         }
         fetchStudents();
     }
