@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ${{ secrets.APP_DIR }}
-            git pull origin main
+            git pull origin master
             ./mvnw -f backend/pom.xml package -DskipTests
             docker-compose down
             docker-compose up --build -d
