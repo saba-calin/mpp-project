@@ -35,7 +35,7 @@ public class SecurityConfig {
         return http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**", "/ws/**").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**", "/ws/**", "/noauth").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 ).userDetailsService(this.userDetailsService)
