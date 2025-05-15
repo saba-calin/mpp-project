@@ -47,7 +47,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://mpp-spring-bucket.s3-website-us-east-1.amazonaws.com"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://mpp-spring-bucket.s3-website-us-east-1.amazonaws.com", "https://d197q1f0snn0jg.cloudfront.net"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
