@@ -1,6 +1,7 @@
 FROM eclipse-temurin:23-jdk
 WORKDIR /app
 COPY target/*.jar app.jar
-COPY photos /app/photos
+RUN MKDIR -p /app/photos
+COPY photos/default-photo.jpg /app/photos/default-photo.jpg
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
