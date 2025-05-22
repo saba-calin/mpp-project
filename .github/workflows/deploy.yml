@@ -37,7 +37,7 @@ jobs:
           ./mvnw clean package -DskipTests
 
       - name: Deploy Frontend
-        uses: appleboy/scp-action@v0.1.10
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
@@ -46,7 +46,7 @@ jobs:
           target: "/var/www/html"
 
       - name: Deploy Backend JAR
-        uses: appleboy/scp-action@v0.1.10
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
@@ -55,7 +55,7 @@ jobs:
           target: "/home/ec2-user/app"
 
       - name: Restart Backend
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
