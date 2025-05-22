@@ -21,6 +21,6 @@ public class DemoController {
 
     @GetMapping("/noauth")
     public ResponseEntity<String> noauth() {
-        return ResponseEntity.ok("Hello incognito");
+        return ResponseEntity.ok("Hello noauth");
     }
 }
