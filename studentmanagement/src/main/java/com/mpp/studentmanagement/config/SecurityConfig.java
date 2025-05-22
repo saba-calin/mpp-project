@@ -35,7 +35,7 @@ public class SecurityConfig {
         return http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**", "/ws/**", "/noauth").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**", "/api/v1/ws/**", "/api/v1/noauth").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 ).userDetailsService(this.userDetailsService)
@@ -47,7 +47,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://mpp-spring-bucket.s3-website-us-east-1.amazonaws.com", "https://d197q1f0snn0jg.cloudfront.net"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://mpp-spring-bucket.s3-website-us-east-1.amazonaws.com", "https://d197q1f0snn0jg.cloudfront.net", "https://why-ninety-six-when-you-can-sixty-nine.store"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

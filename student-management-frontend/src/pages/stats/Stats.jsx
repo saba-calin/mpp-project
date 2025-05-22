@@ -16,7 +16,7 @@ const Stats = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -38,7 +38,7 @@ const Stats = () => {
         }
 
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students/stats`, {
+            const response = await axios.get(`${serverUrl}/students/stats`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

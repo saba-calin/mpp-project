@@ -22,7 +22,7 @@ const Home = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -49,7 +49,7 @@ const Home = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/students`, {
+            const response = await axios.get(`${serverUrl}/students`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -76,12 +76,12 @@ const Home = () => {
         const fetchStudents = async () => {
             const count = scrollCount * 5;
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+            const response = await axios.get(`${serverUrl}/students/pagination?count=${count}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students", token), {
+            await axios.post(`${serverUrl}/logs`, buildOperationLog("get_students", token), {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -101,26 +101,26 @@ const Home = () => {
         }
 
         const token = localStorage.getItem("token");
-        await axios.delete(`${serverUrl}/api/v1/students/${id}`, {
+        await axios.delete(`${serverUrl}/students/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_students", token), {
+        await axios.post(`${serverUrl}/logs`, buildOperationLog("delete_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
         const fetchStudents = async () => {
             const count = scrollCount * 5;
-            const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+            const response = await axios.get(`${serverUrl}/students/pagination?count=${count}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
             setStudents(response.data);
 
-            const anotherResponse = await axios.get(`${serverUrl}/api/v1/students`, {
+            const anotherResponse = await axios.get(`${serverUrl}/students`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -132,13 +132,13 @@ const Home = () => {
 
     const handleDropStudentsTable = async () => {
         const token = localStorage.getItem("token");
-        await axios.delete(`${serverUrl}/api/v1/students/drop-table`, {
+        await axios.delete(`${serverUrl}/students/drop-table`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
         const fetchStudents = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/students`, {
+            const response = await axios.get(`${serverUrl}/students`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -150,7 +150,7 @@ const Home = () => {
     }
     const handleDropCarsTable = async () => {
         const token = localStorage.getItem("token");
-        await axios.delete(`${serverUrl}/api/v1/cars/drop-table`, {
+        await axios.delete(`${serverUrl}/cars/drop-table`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -159,7 +159,7 @@ const Home = () => {
 
     const fetchStudentsForPieChart = async () => {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${serverUrl}/api/v1/students`, {
+        const response = await axios.get(`${serverUrl}/students`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -169,7 +169,7 @@ const Home = () => {
     const fetchStudentsForDisplay = async () => {
         const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+        const response = await axios.get(`${serverUrl}/students/pagination?count=${count}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -183,7 +183,7 @@ const Home = () => {
 
         for (const entry of deletedStudents) {
             deleted = true;
-            await axios.delete(`${serverUrl}/api/v1/students/${entry}`, {
+            await axios.delete(`${serverUrl}/students/${entry}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -213,7 +213,7 @@ const Home = () => {
                 formData.append('photo', blob, 'image.jpg');
             }
 
-            await axios.put(`${serverUrl}/api/v1/students`, formData, {
+            await axios.put(`${serverUrl}/students`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -244,7 +244,7 @@ const Home = () => {
                 formData.append('photo', blob, 'image.jpg');
             }
 
-            await axios.post(`${serverUrl}/api/v1/students`, formData, {
+            await axios.post(`${serverUrl}/students`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -278,12 +278,13 @@ const Home = () => {
         const interval = setInterval(() => {
             if (isOnline === true) {
                 const token = localStorage.getItem("token");
-                axios.get(`${serverUrl}/api/health`, {
+                axios.get(`${serverUrl}/health`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
                 .then(() => {
+                    console.log("here");
                     syncLocalEdits();
                     setServerStatus(true);
                 })
@@ -291,7 +292,7 @@ const Home = () => {
                     setServerStatus(false);
                 });
             }
-        }, 1000000);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, [isOnline]);
@@ -300,7 +301,7 @@ const Home = () => {
     const handleFilter = async(str) => {
         const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+        const response = await axios.get(`${serverUrl}/students/pagination?count=${count}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -336,7 +337,7 @@ const Home = () => {
     const changeOrder = async () => {
         const token = localStorage.getItem("token");
         const count = scrollCount * 5;
-        const response = await axios.get(`${serverUrl}/api/v1/students/pagination?count=${count}`, {
+        const response = await axios.get(`${serverUrl}/students/pagination?count=${count}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -397,7 +398,7 @@ const Home = () => {
             stompClient.subscribe("/topic/gradeDistribution", () => {
                 const fetchStudents = async () => {
                     const token = localStorage.getItem("token");
-                    const response = await axios.get(`${serverUrl}/api/v1/students`, {
+                    const response = await axios.get(`${serverUrl}/students`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -424,7 +425,7 @@ const Home = () => {
     const [isTaskRunning, setIsTaskRunning] = useState(false);
     const handleTaskButton = async () => {
         const token = localStorage.getItem("token");
-        const response = await axios.post(`${serverUrl}/api/v1/students/startStopTask`, {}, {
+        const response = await axios.post(`${serverUrl}/students/startStopTask`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -439,7 +440,7 @@ const Home = () => {
     useEffect(() => {
         const getTaskStatus = async () => {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/students/getTaskStatus`, {
+            const response = await axios.get(`${serverUrl}/students/getTaskStatus`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

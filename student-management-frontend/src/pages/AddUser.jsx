@@ -29,7 +29,7 @@ const AddUser = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -144,13 +144,13 @@ const AddUser = () => {
         formData.append('student', JSON.stringify(student));
         formData.append('photo', formattedData.photo);
 
-        axios.post(`${serverUrl}/api/v1/students`, formData, {
+        axios.post(`${serverUrl}/students`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_students", token), {
+        axios.post(`${serverUrl}/logs`, buildOperationLog("post_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -175,7 +175,7 @@ const AddUser = () => {
             }
 
             if (isOnline === true) {
-                axios.get(`${serverUrl}/api/health`, {
+                axios.get(`${serverUrl}/health`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -187,7 +187,7 @@ const AddUser = () => {
                     setServerStatus(false);
                 });
             }
-        }, 1000000);
+        }, 100000);
 
         return () => clearInterval(interval);
     }, [isOnline]);

@@ -20,7 +20,7 @@ const EditUser = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -48,7 +48,7 @@ const EditUser = () => {
     useEffect(() => {
         const fetchData = async () => {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/students/${id}`, {
+            const response = await axios.get(`${serverUrl}/students/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -56,7 +56,7 @@ const EditUser = () => {
             setStudent(response.data);
 
             const img = await axios.get(
-                `${serverUrl}/api/v1/students/image?path=${response.data.path}`,
+                `${serverUrl}/students/image?path=${response.data.path}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -65,7 +65,7 @@ const EditUser = () => {
                 }
             );
             console.log(img);
-            await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_students", token), {
+            await axios.post(`${serverUrl}/logs`, buildOperationLog("get_students", token), {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -174,13 +174,13 @@ const EditUser = () => {
         console.log(formData);
 
         const token = localStorage.getItem("token");
-        axios.put(`${serverUrl}/api/v1/students`, formData, {
+        axios.put(`${serverUrl}/students`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_students", token), {
+        axios.post(`${serverUrl}/logs`, buildOperationLog("put_students", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -193,12 +193,12 @@ const EditUser = () => {
 
     const fetchCars = async () => {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`, {
+        const response = await axios.get(`${serverUrl}/cars/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("get_cars", token), {
+        await axios.post(`${serverUrl}/logs`, buildOperationLog("get_cars", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -237,7 +237,7 @@ const EditUser = () => {
         const interval = setInterval(() => {
             if (isOnline === true) {
                 const token = localStorage.getItem("token");
-                axios.get(`${serverUrl}/api/health`, {
+                axios.get(`${serverUrl}/health`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -249,19 +249,19 @@ const EditUser = () => {
                         setServerStatus(false);
                     });
             }
-        }, 1000000);
+        }, 100000);
 
         return () => clearInterval(interval);
     }, [isOnline]);
 
     const handleDelete = async (carId) => {
         const token = localStorage.getItem("token");
-        await axios.delete(`${serverUrl}/api/v1/cars/${carId}`, {
+        await axios.delete(`${serverUrl}/cars/${carId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        await axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("delete_car", token), {
+        await axios.post(`${serverUrl}/logs`, buildOperationLog("delete_car", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -273,7 +273,7 @@ const EditUser = () => {
     const [order, setOrder] = useState("neutral");
     const fetchAndProcessCars = async(str, sortOrder) => {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${serverUrl}/api/v1/cars/${id}`, {
+        const response = await axios.get(`${serverUrl}/cars/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

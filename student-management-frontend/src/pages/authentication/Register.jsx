@@ -45,7 +45,7 @@ const Register = () => {
             password: formattedData.password,
             role: formattedData.role
         }
-        axios.post(`${serverUrl}/api/v1/auth/register/init`, user)
+        axios.post(`${serverUrl}/auth/register/init`, user)
             .then((response) => {
                 const data = response.data;
                 setQrCodeUrl(data.qrCodeUrl);
@@ -65,7 +65,7 @@ const Register = () => {
             username: username,
             verificationCode: formattedData.code
         };
-        axios.post(`${serverUrl}/api/v1/auth/register/confirm`, registerConfirmRequest)
+        axios.post(`${serverUrl}/auth/register/confirm`, registerConfirmRequest)
             .then((response) => {
                 const token = response.data.token;
                 localStorage.setItem("token", token);

@@ -13,7 +13,7 @@ const HomeNavbar = () => {
             const data = {
                 token: token
             }
-            const response = await axios.post(`${serverUrl}/api/v1/auth/is-admin`, data, {
+            const response = await axios.post(`${serverUrl}/auth/is-admin`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

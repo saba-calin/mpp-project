@@ -15,7 +15,7 @@ const EditCar = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -52,7 +52,7 @@ const EditCar = () => {
         }
 
         const fetchStudent = async () => {
-            const response = await axios.get(`${serverUrl}/api/v1/cars?id=${carId}`, {
+            const response = await axios.get(`${serverUrl}/cars?id=${carId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -94,7 +94,7 @@ const EditCar = () => {
             year: formattedData.year,
             studentId: formattedData.ownerId
         }
-        axios.put(`${serverUrl}/api/v1/cars?id=${carId}`, car, {
+        axios.put(`${serverUrl}/cars?id=${carId}`, car, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -102,7 +102,7 @@ const EditCar = () => {
             .catch(() => {
                 alert("Owner with the provided id does not exist");
             });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("put_car", token), {
+        axios.post(`${serverUrl}/logs`, buildOperationLog("put_car", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }

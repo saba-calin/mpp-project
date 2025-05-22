@@ -18,7 +18,7 @@ const Login = () => {
             verificationCode: formattedData.code
         };
         console.log(authRequest);
-        axios.post(`${serverUrl}/api/v1/auth/login`, authRequest)
+        axios.post(`${serverUrl}/auth/login`, authRequest)
             .then((response) => {
                 const token = response.data.token;
                 localStorage.setItem("token", token);

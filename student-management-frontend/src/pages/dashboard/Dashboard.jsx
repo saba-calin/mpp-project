@@ -16,7 +16,7 @@ const Dashboard = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -30,7 +30,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${serverUrl}/api/v1/suspicioususer/users`, {
+            const response = await axios.get(`${serverUrl}/suspicioususer/users`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

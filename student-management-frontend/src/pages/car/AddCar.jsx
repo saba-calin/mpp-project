@@ -15,7 +15,7 @@ const AddCar = () => {
         const data = {
             token: token
         }
-        axios.post(`${serverUrl}/api/v1/auth/is-user`, data, {
+        axios.post(`${serverUrl}/auth/is-user`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -76,12 +76,12 @@ const AddCar = () => {
             year: formattedData.year,
             studentId: id
         }
-        axios.post(`${serverUrl}/api/v1/cars`, car, {
+        axios.post(`${serverUrl}/cars`, car, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        axios.post(`${serverUrl}/api/v1/logs`, buildOperationLog("post_car", token), {
+        axios.post(`${serverUrl}/logs`, buildOperationLog("post_car", token), {
             headers: {
                 Authorization: `Bearer ${token}`
             }
