@@ -62,6 +62,8 @@ jobs:
           key: ${{ secrets.EC2_KEY_BOTH }}
           script: |
             pkill -f 'java -jar' || true
+            sleep 2
             cd /home/ec2-user/app/studentmanagement/target
             nohup java -jar studentmanagement-0.0.1-SNAPSHOT.jar > backend.log 2>&1 &
-
+            sleep 3
+            pgrep -f 'java -jar' || echo "Failed to start backend"
