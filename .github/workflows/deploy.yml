@@ -52,3 +52,12 @@ jobs:
           key: ${{ secrets.EC2_KEY_BOTH }}
           source: "studentmanagement/target/*.jar"
           target: "/home/ec2-user/app"
+
+      - name: Restart Backend
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST_BOTH }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY_BOTH }}
+          script: |
+            sudo systemctl restart studentmanagement
