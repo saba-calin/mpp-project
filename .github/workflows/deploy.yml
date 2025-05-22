@@ -33,19 +33,20 @@ jobs:
       - name: Build Backend
         working-directory: ./studentmanagement
         run: |
+          chmod +x mvnw
           ./mvnw clean package -DskipTests
 
-      - name: Deploy via SSH
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy Frontend
+        uses: appleboy/scp-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY_BOTH }}
-          source: "student-management-frontend/dist/*"
+          source: "student-management-frontend/dist/**"
           target: "/var/www/html"
 
       - name: Deploy Backend JAR
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
