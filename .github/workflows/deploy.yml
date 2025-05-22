@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -33,7 +33,6 @@ jobs:
       - name: Build Backend
         working-directory: ./studentmanagement
         run: |
-          chmod +x mvnw
           ./mvnw clean package -DskipTests
 
       - name: Deploy Frontend
@@ -46,19 +45,10 @@ jobs:
           target: "/var/www/html"
 
       - name: Deploy Backend JAR
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY_BOTH }}
           source: "studentmanagement/target/*.jar"
           target: "/home/ec2-user/app"
-
-      - name: Restart Backend
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST_BOTH }}
-          username: ec2-user
-          key: ${{ secrets.EC2_KEY_BOTH }}
-          script: |
-            sudo systemctl restart studentmanagement
