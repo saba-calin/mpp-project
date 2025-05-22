@@ -45,13 +45,22 @@ jobs:
           source: "student-management-frontend/dist/**"
           target: "/var/www/html"
 
+      - name: Clean & build backend
+        working-directory: ./studentmanagement
+        run: |
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
+          ls -lh target/studentmanagement-0.0.1-SNAPSHOT.jar  # debug
+
       - name: Deploy Backend JAR
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST_BOTH }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY_BOTH }}
-          source: "studentmanagement/target/*.jar"
+          script: |
+            rm -f /home/ec2-user/app/studentmanagement/target/studentmanagement-0.0.1-SNAPSHOT.jar
+          source: "studentmanagement/target/studentmanagement-0.0.1-SNAPSHOT.jar"
           target: "/home/ec2-user/app/studentmanagement/target"
 
       - name: Restart Backend
